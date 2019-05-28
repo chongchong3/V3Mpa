@@ -7,18 +7,11 @@
                         <div
                             class="wareList"
                             :class="
-                                row.handlerStatus == 0 &&
-                                row.superviseStatus == 0
+                                isEnt || (row.handlerStatus == 0 && row.superviseStatus == 0)
                                     ? 'contentAble'
                                     : ''
                             "
-                            @click="
-                                enter(
-                                    row.handlerStatus,
-                                    row.superviseStatus,
-                                    row.id
-                                )
-                            "
+                            @click="handleWareListClicked(row)"
                             v-for="(row, index) in feedList"
                             :key="index"
                         >
@@ -27,34 +20,34 @@
                                     <div class="wareList-bott-name qsk">
                                         {{ row.companyName }}
                                     </div>
-                                    <div class="wareList-bott-question qsk">
+                                    <div class="wareList-bott-question qsk" v-if="row.problemTypeName">
                                         {{ row.problemTypeName }}
                                     </div>
                                 </div>
                                 <div class="wareList-top-desc">
                                     {{ row.problemContent }}
                                 </div>
-                                <div
-                                    class="wareList-top-process"
-                                    v-if="row.recordDtoList"
-                                >
+                                <div class="wareList-top-process">
                                     <div
-                                        v-for="(v, index) in row.recordDtoList"
-                                        :key="index + 'q'"
                                         class="pross"
-                                        :class="
-                                            v.handlerStatus == 8
-                                                ? 'complete'
-                                                : v.handlerStatus == 1
-                                                ? 'noHandle'
-                                                : ''
-                                        "
+                                        v-for="(item, index) in row.recordDtoList || []"
+                                        :key="index"
+                                        :class="classForProcessItem(item)"
+                                        :style="
+                                    index === 0
+                                        ? '{color: #5C7CEC, border-color: #5C7CEC}'
+                                        : 'color: #FF6D60, border-color: #FF6D60'
+                                "
                                     >
-                                        {{ index != 0 ? "@" : "" }}&nbsp;{{
-                                            v.handlerName
-                                        }}({{ v.name }})
+                                        &nbsp;{{ item.handlerName }}({{
+                                        statusForProcessItem(item)
+                                        }})
                                     </div>
-                                </div>
+                                    <p class="back-reason" v-if="row.problemStatus === 6">
+                                        <span class="back-reason-title">[退回理由]</span>
+                                        {{toHtmlStr((row.backReason))}}
+                                    </p>
+                                </div>                                
                             </div>
                             <div class="wareList-bott">
                                 <div class="wareList-bottLeft">
@@ -76,30 +69,28 @@
                                         <span>{{ row.finishTime }}</span>
                                     </div>
                                 </div>
-                                <div class="wareList-bottRight">
+                                <div class="wareList-bottRight" v-if="!isEnt">
                                     <div
-                                        @click="enter('', '', row.id)"
-                                        :class="
-                                            row.handlerStatus == 0
-                                                ? 'hidden'
-                                                : ''
-                                        "
-                                        class="btn btn-link btn-edit resolve"
-                                    >
-                                        <i class="iconfont icon-chuliwenti"></i
-                                        >处理问题
-                                    </div>
-                                    <div
-                                        @click="enter('', '', row.id)"
+                                        @click="handlerSupervision(row.id)"
                                         :class="
                                             row.superviseStatus == 0
                                                 ? 'hidden'
                                                 : ''
                                         "
-                                        class="btn btn-link btn-edit check "
+                                        class="btn btn-link btn-supervision"
                                     >
-                                        <i class="iconfont icon-chuliwenti"></i
-                                        >督办问题
+                                        <i class="iconfont icon-chuliwenti"></i> 督办问题
+                                    </div>
+                                    <div
+                                        @click="handlerResolve(row.id)"
+                                        :class="
+                                            row.handlerStatus == 0
+                                                ? 'hidden'
+                                                : ''
+                                        "
+                                        class="btn btn-link btn-resolve"
+                                    >
+                                        <i class="iconfont icon-chuliwenti"></i> 处理问题
                                     </div>
                                 </div>
                             </div>
@@ -118,7 +109,9 @@
 import * as inter from "@api/bussiness.js";
 import MassageTip from "@/components/business/massageTip";
 import { handerSta } from "@/common/constant/constantConst.js";
-import { gotoEntURL } from "@/common/utils/index"; //跳转路径
+import { gotoEntURL } from "@/common/utils/index";
+import {gotoGovURL, toHtmlStr} from "../../common/utils";
+import {linHaiData} from "../../common/constant/constant"; //跳转路径
 export default {
     props: {
         creditCodes: {
@@ -131,7 +124,9 @@ export default {
     data() {
         return {
             getData: true,
-            feedList: []
+            feedList: [],
+            toHtmlStr: toHtmlStr,
+            isEnt:window.location.pathname.split('/').includes('ent')
         };
     },
 
@@ -145,171 +140,48 @@ export default {
             };
             inter.showProblemList(params).then(response => {
                 if (response.code == "0000") {
-                    this.getData = false;
-                    response.data.map((v, i) => {
-                        v.recordDtoList.map((value, i) => {
-                            this.$set(
-                                value,
-                                "name",
-                                handerSta.get(value.handlerStatus)
-                            );
-                        });
-                    });
-                    this.feedList = response.data;
-                }
+                    this.feedList = response.data || [];
+                    this.getData = this.feedList.length === 0;
+                } 
             });
         },
-        enter(h, s, id) {
-            if (h == 0 && s == 0) {
-                gotoEntURL(`feedBackDetail.html?problemId=${id}`);
+        handleWareListClicked(row) {
+            if (this.isEnt) {
+                gotoEntURL("questionFeedbackDetail.html?problemId="+row.id);
+            } else if (row.superviseStatus != 1 && row.handlerStatus != 1) {
+                this.jumpToUrl("resolveProblem.html?type=problemDetail&id=" + row.id,row.id);               
             }
+        },
+        handlerSupervision(id) {
+            this.jumpToUrl("resolveProblem.html?type=supervisionProblem&id=" + id,id);
+        },
+        handlerResolve(id) {
+            this.jumpToUrl("resolveProblem.html?type=resolveProblem&id=" + id,id);
+        },
+        jumpToUrl(url,id) {
+            if (this.isEnt) {
+                gotoEntURL("questionFeedbackDetail.html?problemId="+id);
+            } else {
+                gotoGovURL(url);
+            }
+        },
+        classForProcessItem(item) {
+            return item.handlerStatus == 8
+                ? "complete"
+                : item.handlerStatus == 1
+                    ? "noHandle"
+                    : "";
+        },
+        statusForProcessItem(item) {
+            let a = linHaiData.handerStatus.find(val => {
+                return item.handlerStatus == val.key;
+            });
+            return a.name;
         }
     }
 };
 </script>
 <style lang="less" scoped>
-@borderColor: #e3eaf1;
-@inputBg: rgba(0, 0, 0, 0.04);
-@inputBorder: #d9d9d9;
-@fontNorma: #9399a5;
-@successColor: #5c7cec;
-@errorColor: #ff6d60;
-@wanchenColor: #25b499;
-@inputText: rgba(0, 0, 0, 0.25);
-@defaultBlueColor: #6b8af0;
-.result-list {
-    width: 100%;
-    padding: 20px;
-    .wareList {
-        width: 100%;
-        min-height: 152px;
-        background-color: rgba(255, 255, 255, 1);
-        box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.08),
-            inset 0px -1px 0px 0px rgba(235, 235, 235, 1);
-        margin-bottom: 10px;
-        &-top {
-            width: 100%;
-            min-height: 112px;
-            padding: 15px 20px;
-            padding-bottom: 0;
-            border-bottom: 1px solid #ebebeb;
-            font-size: 12px;
-            &-title {
-                font-size: 14px;
-                color: #455467;
-                margin-bottom: 6px;
-
-                display: flex;
-                .wareList-bott-question {
-                    padding: 0 6px;
-                    height: 20px;
-                    line-height: 20px;
-                    background: rgba(255, 109, 96, 0.1);
-                    color: #ff6d60;
-                    font-size: 12px;
-                    margin-left: 10px;
-                }
-                .wareList-bott-name {
-                    font-weight: 600;
-                }
-            }
-            &-desc {
-                color: #9399a5;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                line-height: 20px;
-            }
-            &-process {
-                width: 100%;
-                min-height: 30px;
-                //background: rgba(0,0,0,0.04);
-                margin-top: 10px;
-                font-size: 12px;
-                display: flex;
-                align-items: center;
-                flex-wrap: wrap;
-                .pross {
-                    padding: 2px 4px;
-                    height: 24px;
-                    border: 1px solid @successColor;
-                    border-radius: 2px;
-                    position: relative;
-                    color: @successColor;
-                    margin-right: 30px;
-                    margin-bottom: 15px;
-                    &:after {
-                        content: ">";
-                        position: absolute;
-                        top: 2px;
-                        right: -20px;
-                        font-weight: 500;
-                        color: @successColor;
-                    }
-                }
-                .pross:last-child {
-                    &:after {
-                        content: "";
-                    }
-                }
-                .noHandle {
-                    color: @errorColor;
-                    border: 1px solid @errorColor;
-                }
-                .complete {
-                    color: @wanchenColor;
-                    border: 1px solid @wanchenColor;
-                }
-            }
-        }
-        &-bott {
-            height: 40px;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            font-size: 12px;
-            .wareList-bottLeft {
-                display: flex;
-                color: @successColor;
-                align-items: center;
-                .wareList-bott-question {
-                    padding: 0 6px;
-                    height: 20px;
-                    line-height: 20px;
-                    background: rgba(92, 124, 236, 0.1);
-                }
-                .time {
-                    color: #9399a5;
-                }
-                .qsk {
-                    margin-right: 20px;
-                }
-            }
-            .wareList-bottRight {
-                .btn-link {
-                    text-decoration: none;
-                    font-size: 12px;
-                }
-                .btn-back,
-                .btn-supervision {
-                    color: @errorColor;
-                }
-                .btn-resolve {
-                    color: @successColor;
-                }
-            }
-        }
-    }
-}
-.hidden {
-    display: none;
-}
-.contentAble {
-    cursor: pointer;
-}
+   @import "../../common/less/linHaicommon";
 </style>
 

@@ -496,6 +496,10 @@ const statusdata = {
     appealRecord: ['已驳回','已修改','未处理'],
     appealRecordList:[
         {
+            label:'审核不通过',
+            value:4
+        },
+        {
             label:'已驳回',
             value:3
         },{

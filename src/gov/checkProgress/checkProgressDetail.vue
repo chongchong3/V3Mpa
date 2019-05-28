@@ -126,6 +126,14 @@
                             {{ checkProgress[scope.row.status] }}
                         </template>
                     </el-table-column>
+                    <el-table-column
+                        label="操作"
+                        width="80">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.status == 1">退回</span>
+                            <el-button v-else  @click="recall(scope.row)" type="text">退回</el-button>
+                        </template>
+                    </el-table-column>
                 </el-table>
                 <el-pagination
                     background
@@ -141,7 +149,7 @@
                 <div class="noData-img"></div>
                 <div class="noData-desc">
                     <p>暂无数据</p>
-                    <p>Have no Message</p>
+                    <p>Have no Data</p>
                 </div>
             </div>
         </div>
@@ -152,7 +160,7 @@
 import * as api from "@api/gov/checkProgress";
 import { gotoGovURL, getLocalStorage, toHtmlStr } from "@/common/utils/index";
 import { dataTime, statusdata } from "@/common/constant/constant";
-
+import {recall} from "@api/gov/companyPaperDetail";
 export default {
     data() {
         return {
@@ -161,7 +169,7 @@ export default {
             status: "全部",
             entNameLike: "",
             searchCondition: {},
-            townDatas: ["全部"],
+            townDatas: [],
             checkProgress: ["全部", ...statusdata.checkProgress],
             dataTime: [
                 {
@@ -188,19 +196,56 @@ export default {
     computed: {
         noData: function() {
             return this.dataList.length === 0;
+        },
+        isAdmin() {
+            return this.$store.state.isAdmin;
+//            return 2;
         }
     },
     methods: {
-        getTownList: function() {
+        recall(row){//撤回
+            let {dataYear,creditCode} = row;
+            this.$confirm('将企业的填报数据状态修改为未填报状态？但会保留所有已经填报的数据，您确定要继续吗?', '提示', {
+                confirmButtonText: '继续',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                recall({
+                    creditCode: creditCode,
+                    dataYear: dataYear,
+                }).then((d)=>{
+                    if(d.code=='0000'){
+                        this.$message({
+                            type: 'success',
+                            message: d.msg
+                        });
+                        this.fetchData();
+                    }
+
+                }).catch()
+
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消'
+                });
+            });
+        },
+        getTownList() {
             api.getTownList()
                 .then(res => {
                     if (res.code === "0000") {
-                        this.townDatas = ["全部", ...res.data] || ["全部"];
+                        if(this.isAdmin==1){
+                            this.townDatas = ["全部", ...res.data];
+                        }else{
+                            this.townDatas = res.data ||[];
+                        }
+
                     }
                 })
                 .catch(reason => {});
         },
-        fetchData: function() {
+        fetchData() {
             const params = {
                 entNameLike: this.entNameLike,
                 dataYear: this.year,

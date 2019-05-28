@@ -18,19 +18,7 @@
               >
               </el-table-column>
             </el-table>
-            <!-- <el-row
-              :gutter="20"
-              class="data-cells"
-              v-for="item in land.departmentList"
-              :key="item.name"
-            >
-              <el-col :span="10" class="data-cells-title">
-                <div>{{item.name}}</div>
-              </el-col>
-              <el-col :span="14" class="data-cells-detail">
-                <div>{{department[item.key]}}</div>
-              </el-col>
-            </el-row> -->
+            
           </div>
         </div>
 
@@ -64,7 +52,8 @@
                 <button class="sendIdea" @click="sendIdeas($event,item.key)" :class="fileArr.includes(item.key)==true?'disableStatus':''">{{fileArr.includes(item.key)==true?'已申诉':'发起申诉'}}</button>
                 <button class="sureIdea" @click="sendIdeas($event,item.key)" :class="fileArr.includes(item.key)==false?'disableStatus1':''">{{fileArr.includes(item.key)!==true?'已确认':'确认无误'}}</button>
               </div>
-              <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr&&param.userType=='2'">
+              <!--<div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr&&param.userType=='2'">-->
+              <div class="buttons appeal" v-show="action=='appealRecord'">
                 <!-- <span>{{item.key}}</span> -->
                 <div v-if="fileArr.includes(item.key)">
                   <button class="sendIdea" @click="backReason(item.key,$event,'驳回原因')">驳回</button>
@@ -112,7 +101,7 @@
                 <button class="sendIdea" @click="sendIdeas($event,item.key)" :class="fileArr.includes(item.key)==true?'disableStatus':''">{{fileArr.includes(item.key)==true?'已申诉':'发起申诉'}}</button>
                 <button class="sureIdea" @click="sendIdeas($event,item.key)" :class="fileArr.includes(item.key)==false?'disableStatus1':''">{{fileArr.includes(item.key)!==true?'已确认':'确认无误'}}</button>
               </div>
-              <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr&&param.userType=='2'">
+              <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr">
                 <!-- <span>{{item.key}}</span> -->
                 <div v-if="fileArr.includes(item.key)">
                   <button class="sendIdea" @click="backReason(item.key,$event,'驳回原因')">驳回</button>

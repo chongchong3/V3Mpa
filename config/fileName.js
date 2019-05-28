@@ -60,7 +60,7 @@ module.exports = {
         'entFile',      //企业档案
         'entDetail',        //企业详情
         'checkProgress', //核对进展
-        'companySelfCore', //企业自核
+
         'appealRecord', //申诉记录
         'townCheck', //乡镇审核
 

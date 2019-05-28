@@ -21,19 +21,7 @@
               >
               </el-table-column>
             </el-table>
-            <!-- <el-row
-              :gutter="20"
-              class="data-cells"
-              v-for="(item,index) in land.departmentList"
-              :key="index+'qw'"
-            >
-              <el-col :span="10" class="data-cells-title">
-                <div>{{item.name}}</div>
-              </el-col>
-              <el-col :span="14" class="data-cells-detail" >
-                <div>{{department[item.key]}}</div>
-              </el-col>
-            </el-row> -->
+            
           </div>
         </div>
         <div class="water-total itempaper">
@@ -47,7 +35,7 @@
                 <div>用水量(万吨)</div>
               </el-col>
               <el-col :span="14" class="data-cells-detail">
-                <div>{{waterList.totalWaterUsed}}</div>
+                <div>{{toHtmlStr((waterList.totalWaterUsed.toFixed(2)),'')}}</div>
               </el-col>
             </el-row>
           </div>
@@ -68,7 +56,7 @@
             </div>
             <div class="total-cell waterTotal">
               <div class="text">用水量合计</div>
-              <div class="val">{{waterList.waterTotal}}</div>
+              <div class="val">{{toHtmlStr((waterList.waterTotal.toFixed(2)),'')}}</div>
               <div class="one"></div>
             </div>
             <div class="table-tbody">
@@ -82,11 +70,11 @@
                   <el-col :span="6" class="waterMeterNumber">{{v.waterMeterNumber}}</el-col>
                   <el-col :span="6" class="waterMeterName">{{v.waterMeterName}}</el-col>
                   <el-col :span="6" class="waterConsumption">{{v.waterConsumption}}</el-col>
-                  <el-col class="waterConsumption" :span="4">{{rejectUpdateList[v.id]}}</el-col>
+                  <el-col class="waterConsumption appeal_reason" :span="4">{{rejectUpdateList[v.id]}}</el-col>
                 </el-row>
                 <div
                   class="edit-data edit-someone water-num-btn"
-                  v-show="action=='entFile'"
+                  v-show="action=='entFile'&&v.importType != 1"
                 >
                   <div class="btn btn-edit" @click="editWater(v,i)">
                     <i class="iconfont icon-xiugai"></i>
@@ -103,28 +91,30 @@
                     </div>
                   </div>
                 </div>
-                <div class="buttons" v-show="action=='check'&&v.importType == 1" ref="sureApeal">
-                  <button class="sendIdea" @click="sendIdeas($event)">发起申诉</button>
-                  <button class="sureIdea" @click="sendIdeas($event)">确认无误</button>
+                <div class="buttons" v-show="action=='check'" ref="sureApeal">
+                  <button class="sendIdea" @click="sendIdeas($event,`waterConsumption${i+1}`)">发起申诉</button>
+                  <button class="sureIdea" @click="sendIdeas($event,`waterConsumption${i+1}`)">确认无误</button>
                 </div>
-                <div class="buttons" v-show="action=='check'&&param.status=='6'&&v.importType == 1" v-if="fileArr.length>0">
+                 <div class="buttons" v-show="action=='check'&&param.status=='6'" v-if="fileArr.length>0">
+                <!--<div class="buttons" v-show="action=='check'&&param.status=='6'" >-->
                   <button 
                     class="sendIdea"
-                    @click="sendIdeas($event)"
-                    :class="fileArr.includes(itemArr[i])==true?'disableStatus':''"
-                  >{{fileArr.includes(itemArr[i])==true?'已申诉':'发起申诉'}}</button>
+                    @click="sendIdeas($event,`waterConsumption${i+1}`)"
+                    :class="fileArr.indexOf('waterConsumption'+(i+1))!==-1?'disableStatus':''"
+                  >{{fileArr.indexOf('waterConsumption'+(i+1))!==-1?'已申诉':'发起申诉'}}</button>
                   <button
                     class="sureIdea"
-                    @click="sendIdeas($event)"
-                    :class="fileArr.includes(itemArr[i])==false?'disableStatus1':''"
-                  >{{fileArr.includes(itemArr[i])!==true?'已确认':'确认无误'}}</button>
+                    @click="sendIdeas($event,`waterConsumption${i+1}`)"
+                    :class="fileArr.indexOf('waterConsumption'+(i+1))==-1?'disableStatus1':''"
+                  >{{fileArr.indexOf('waterConsumption'+(i+1))==-1?'已确认':'确认无误'}}</button>
                 </div>
-                <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr.length>0">
-                  <div v-show="fileArr.indexOf('electricityConsumption'+(i+1))!==-1">
+                 <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr">
+                <!--<div class="buttons appeal" v-show="action=='appealRecord'" >-->
+                  <div v-show="fileArr.indexOf('waterConsumption'+(i+1))!==-1">
                     <button class="sendIdea" @click="backReason(v.id,$event,'驳回原因',i)">驳回</button>
-                    <button class="sureIdea" @click="backReason(v.id,$event,'修改',i)">修改</button>
+                    <button class="sureIdea" @click="backReason(v.id,$event,'修改',i,v)">修改</button>
                   </div>
-                  <div v-show="fileArr.indexOf('electricityConsumption'+(i+1))==-1">
+                  <div v-show="fileArr.indexOf('waterConsumption'+(i+1))==-1">
                     <i class="iconfont icon-dagoux"></i>核实无误
                   </div>
                 </div>
@@ -204,9 +194,10 @@
   </div>
 </template>
 <script>
-// import * as api from "@api/gov/companyPaperDetail";
-import { getWaterData,getListWaterEntName,addWaterUsed,deleteWaterUsed } from "@api/gov/companyPaperDetail";
+    // import * as api from "@api/gov/companyPaperDetail";
+    import { getWaterData,getListWaterEntName,addWaterUsed,deleteWaterUsed } from "@api/gov/companyPaperDetail";
 import { landData } from "@/common/constant/constant";
+    import {toHtmlStr} from "../../common/utils/dom";
 export default {
   data() {
     return {
@@ -234,6 +225,7 @@ export default {
         totalWaterUsed: null,
         waterMap: []
       },
+      toHtmlStr:toHtmlStr,
       waterForm: {
         waterMeterNumber: "",
         waterMeterName: "",
@@ -257,6 +249,14 @@ export default {
       default: null
     }
   },
+  watch: {
+    field(val) {
+      this.partmentApeal(val);
+    },
+    waterList(val){
+      this.waterList = val;
+    }
+  },
   computed: {
     totalWaterCom() {
       let totalWater = 0;
@@ -273,10 +273,11 @@ export default {
   },
   methods: {
     //驳回原因
-    backReason(backId, event, title, index) {
+    backReason(backId, event, title, index,v) {
       if (title == "修改") {
         this.title = title;
         this.dialogVisible = true;
+//        this.waterForm = v;
       } else {
         this.title = title;
         this.dialogBack = true;
@@ -284,6 +285,7 @@ export default {
       this.isApeal = event.target;
       this.backId = backId;
       this.targetIndex = index;
+//        console.log(this.waterList.waterMap[this.targetIndex]);
     },
     //确定驳回
     sureBack() {
@@ -375,6 +377,7 @@ export default {
         this.$store.commit("setApealButs", { value: false, type: "taxInfo" });
       }
       let field = [...this.files].join(",");
+//      console.log(this.files,field)
       if (field == "") {
         this.textReason = false;
       } else {
@@ -431,6 +434,7 @@ export default {
             type: "setSaveData",
             params: { value: this.waterList, type: "waterList" }
           });
+          this.partmentApeal(this.field);
         });
     },
     nameSearch(queryString, cb) {
@@ -507,7 +511,7 @@ export default {
         ];
         let arr = JSON.parse(JSON.stringify(this.waterList.waterMap));
         arr[this.targetIndex] = Object.assign(
-          {},
+          {},arr[this.targetIndex],
           {
             waterMeterNumber: nowa ? nowa : beforea,
             waterMeterName: nowb ? nowb : beforeb,
@@ -521,25 +525,31 @@ export default {
           v.selfExtractingWater = this.waterList.selfExtractingWater;
           return v;
         });
-        addWaterUsed({ waterUsedList: list }).then(res => {});
+        addWaterUsed({ waterUsedList: list }).then(res => {
+            this.getDataList();
+        });
+
         let $arr = [
           {
             before: beforea,
-            after: nowa
+            after: nowa,
+            name:'水表户号'
           },
           {
             before: beforeb,
-            after: nowb
+            after: nowb,
+            name:'水表户名'
           },
           {
             before: beforec,
-            after: nowc
+            after: nowc,
+            name:'自来水量'
           }
         ];
         let content = "";
         $arr.map(v => {
           if (v.after) {
-            content += `修改前:${v.before}修改后:${v.after}`;
+            content += `${v.name}修改前:${v.before},修改后:${v.after};`;
           }
         });
         this.$emit(

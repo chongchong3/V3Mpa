@@ -128,17 +128,19 @@ export default {
     }
   },
   created() {
-    for(var i=1;i<7;i++){
-      if(i!==1){
-          this.$set(this.rejects,`rejectUpdateList${i}`,{})
-      }
-      this.$set(this.fields,`field${i}`,{field:''})
-    }
-    this._getConsultData();
-    this.beforeInitPage();
+    this.init();
   },
   methods: {
-   
+    init(){
+        for(var i=1;i<7;i++){
+            if(i!==1){
+                this.$set(this.rejects,`rejectUpdateList${i}`,{})
+            }
+            this.$set(this.fields,`field${i}`,{field:''})
+        }
+        this._getConsultData();
+        this.beforeInitPage();
+    },
     //appealRecord 子组件返回的修改信息以及修改请求事件
     reviseEvent(data) {
       let obj = {
@@ -225,20 +227,9 @@ export default {
     //申诉记录页面 申诉回选和驳回信息数据请求
     beforeInitPage() {
       this.reqContent();
-      api
-        .getPollution({
-          creditCode: this.param.creditCode,
-          dataYear: this.param.dataYear
-        })
-        .then(res => {
-          if (res.code == "0000") {
-            this.entRule = res.data.entRule;
-          }
-        });
- 
     },
     reqContent() {
-      if (this.action == "appealRecord" || this.action == "check") {
+      if (this.action == "appealRecord" || this.action == "check" ||this.action=='watch') {
         api
           .showComplain({
             dataYear: this.param.dataYear,
@@ -255,7 +246,7 @@ export default {
              if (this.contents) {
                 //appealRecord 审核状态回显
                 this.contents.map((v, i) => {
-                  this.rejectEvent(v.rejectUpdateList,v.complainRecord.type,v.complainRecord.content,v.complainRecord.field)
+                  this.rejectEvent(v.rejectUpdateList,v.dataType,v.complainRecord.content,v.complainRecord.field)
                 });
               }
             }
@@ -266,17 +257,19 @@ export default {
     rejectEvent(arr,index,content,fieldStr){
       let field=`field${index}`
       this.fields[field]= { field: fieldStr,content:content}
+      let rejectUpdateList=`rejectUpdateList${index}`
       if(index==1){
-        this.rejects.rejectUpdateList1=arr
+         this.rejects.rejectUpdateList1=arr
+      }else if(index==4 || index==5){//水电
+          arr.map((v, i) => {
+            this.$set(this.rejects[rejectUpdateList],v.typeId,v.content)
+          });
       }else{
-          let rejectUpdateList=`rejectUpdateList${index}`
           arr.map((v, i) => {
             this.$set(this.rejects[rejectUpdateList],v.field,v.content)
           });
       }
-     
     }
-
   },
   components: {
     WaterInfo,

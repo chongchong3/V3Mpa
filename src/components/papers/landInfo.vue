@@ -21,19 +21,7 @@
               >
               </el-table-column>
             </el-table>
-            <!-- <el-row
-              :gutter="20"
-              class="data-cells"
-              v-for="(item,i) in land.departmentList"
-              :key="i"
-            >
-              <el-col :span="10" class="data-cells-title">
-                <div>{{item.name}}</div>
-              </el-col>
-              <el-col :span="14" class="data-cells-detail">
-                <div>{{department.list[item.key]}}</div>
-              </el-col>
-            </el-row> -->
+            
           </div>
         </div>
         <div class="total itempaper">
@@ -105,9 +93,9 @@
                       :span="7"
                       class="data-cells-detail appeal_reason"
                       :key="val.key+'r'"
-                      v-if="rejectArr[index]"
+
                     >
-                      <div>{{rejectArr[index][val.key]}}</div>
+                      <div>{{item.id | rejectcontent(val.key,rejectUpdateList)}}</div>
                     </el-col>
                     <div
                       class="buttons"
@@ -125,11 +113,7 @@
                         @click="sendIdeas($event,val.key,item.id,index)"
                       >确认无误</button>
                     </div>
-                    <div
-                      class="buttons"
-                      v-show="action=='check'&&param.status=='6'&&val.key!=='imgUrl'"
-                      v-if="fileArr[index]"
-                    >
+                    <div class="buttons" v-show="action=='check'&&param.status=='6'&&val.key!=='imgUrl'" v-if="fileArr[index]">
                       <button
                         class="sendIdea"
                         @click="sendIdeas($event,val.key,item.id,index)"
@@ -141,11 +125,7 @@
                         :class="fileArr[index].includes(val.key)==false?'disableStatus1':''"
                       >{{fileArr[index].includes(val.key)!==true?'已确认':'确认无误'}}</button>
                     </div>
-                    <div
-                      class="buttons appeal"
-                      v-show="action=='appealRecord'&&val.key!=='imgUrl'"
-                      v-if="fileArr[index]"
-                    >
+                    <div class="buttons appeal" v-show="action=='appealRecord'&&val.key!=='imgUrl'" v-if="fileArr[index]">
                       <div v-if="fileArr[index].includes(val.key)">
                         <button
                           class="sendIdea"
@@ -595,7 +575,7 @@ export default {
       backField: "", //当前驳回的字段
       backReas: "", //当前驳回的理由
       dialogBack: false,
-      fileArr: [], //审核状态数据
+      fileArr:[], //审核状态数据
       rejectArr: [], //驳回理由字段
       isApeal: "", //驳回成功后，‘驳回’，‘修改’按钮回显状态控制
       backId: "",
@@ -736,13 +716,6 @@ export default {
       param: this.$store.state.paperParam
     };
   },
-  watch: {
-    field(val) {
-      this.partmentApeal(val);
-    },
-    department(val){ }
- 
-  },
   props: {
     department: {
       type: Object
@@ -753,6 +726,12 @@ export default {
     rejectUpdateList: {
       type: Array
     }
+  },
+  watch: {
+    field(val) {
+      this.partmentApeal(val);
+    },
+    department(val){ }
   },
   computed: {
     totalWaterUsed() {
@@ -768,6 +747,13 @@ export default {
     }
   },
   filters: {
+    rejectcontent(tid,key,arr){//显示驳回备注
+        const obj = arr.find((val)=>{
+            return val.typeId == tid &&val.field==key;
+        })||null;
+        let text = obj ? obj.content :'';
+        return text;
+    },
     getFileList(img) {
       let arr = img && img.length > 0 ? img.split(",") : [];
       arr = arr.map(v => {
@@ -829,19 +815,25 @@ export default {
     },
     //部门审核显示
     partmentApeal(arr) {
+      this.fileArr=[]
       this.files = new Set();
-      if (arr.field !== undefined && arr.field !== "") {
+        if (arr.field !== undefined ) {
         this.landList.landDataList.map((v, i) => {
-          JSON.parse(arr.field).map((val, i) => {
-            for (let j in val) {
-              let landOccurArr = [];
+          let landOccurArr=[]
+          if(arr.field==''){
+               this.fileArr.push([]);
+          }else{
+              JSON.parse(arr.field).map((val, i) => {
+                let j=val.split("-")[1]
               if (JSON.stringify(v.id) == j) {
-                landOccurArr= val[j].split(",");
-                this.fileArr.push(landOccurArr);
-              }
-            }
-            this.files.add(val);
+                 landOccurArr.push(val.split("-")[0]) ;
+                  this.fileArr.push(landOccurArr);
+                }else{
+                  this.fileArr.push([]);
+                }
+              this.files.add(val);
           });
+          }
         });
       } else {
       }
@@ -849,32 +841,11 @@ export default {
         this.textReason=true
         this.appealReason=arr.content
       }
-      // if (arr.field!==undefined&&arr.field!=='') {
-      //   this.landList.landDataList.map((v, i) => {
-      //     JSON.parse(arr.field).map((val, i) => {
-      //       for (let j in val) {
-      //         if (v.id == j) {
-      //           let aa = val[j].split(",");
-      //           aa.map((vv,i)=>{
-      //              let key=`${vv}-${v.id}`
-      //             this.files.add(key)
-      //             // this.files.push({
-      //             //   [key]:{'key':vv,'id':j}
-      //             // })
-      //           })
-      //           this.fileArr.push(aa);
-      //         }
-      //       }
-      //     });
-      //   });
-      // } else {
-      //   // this.fileArr = false;
-      // }
-
       //驳回备注信息
       this.rejectArr = [];
       this.landList.landDataList.map((v, i) => {
         let obj = {};
+
         this.rejectUpdateList.map((value, j) => {
           if (v.id == value.typeId) {
             obj[value.field] = value.content;
@@ -986,6 +957,7 @@ export default {
             }
             this.landList = Object.assign({}, this.landList, datas);
             this.partmentApeal(this.field);
+
             this.realPropertyNumberList =
               this.landList.landDataList.map((v, i) => {
                 return v.realPropertyNumber;

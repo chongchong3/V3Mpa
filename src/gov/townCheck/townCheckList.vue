@@ -43,15 +43,15 @@
                             审核状态：
                             <el-select
                                 class="select"
-                                v-model="status"
+                                v-model="townStatus"
                                 placeholder="请选择"
                                 @change="fetchData"
                             >
                                 <el-option
                                     v-for="(item, index) in checkProgress"
-                                    :key="item"
-                                    :label="item"
-                                    :value="index === 0 ? '' : index"
+                                    :key="item.val"
+                                    :label="item.name"
+                                    :value="item.val"
                                 >
                                 </el-option>
                             </el-select>
@@ -113,7 +113,6 @@
                         <template slot-scope="scope">
                             <div
                                 class="ent-name"
-                                style="cursor: pointer"
                                 @click="handleEntNameClick(scope.row)"
                             >
                                 {{ toHtmlStr(scope.row.entName, "-") }}
@@ -161,7 +160,7 @@
                     <el-table-column prop="status" label="操作" width="120">
                         <template slot-scope="scope">
                             <el-button
-                                @click="handleViewDetailClick(scope.row)"
+                                @click="handleViewDetailClick(scope.row,scope.$index)"
                                 type="text"
                                 size="small"
                                 style="color: #5C7CEC;"
@@ -184,7 +183,7 @@
                 <div class="noData-img"></div>
                 <div class="noData-desc">
                     <p>暂无数据</p>
-                    <p>Have no Message</p>
+                    <p>Have no Data</p>
                 </div>
             </div>
         </div>
@@ -192,7 +191,7 @@
 </template>
 
 <script>
-import "./less/townCheck.less";
+
 
 import * as api from "@api/gov/checkProgress";
 
@@ -202,6 +201,7 @@ import {
     nowInDateBetwen
 } from "@/common/utils/index";
 import { dataTime, statusdata } from "@/common/constant/constant";
+import {setLocalStorage} from "../../common/utils/storage";
 
 // import { gotoGovURL } from "../../common/utils/util";
 // import toHtmlStr from "@/common/utils/toHtmlStr.js";
@@ -211,19 +211,23 @@ export default {
     name: "townCheckList",
     data: function() {
         return {
-            year: "",
+            year: 2018,
             town: "全部",
-            status: "全部",
+            townStatus: 3,
             entNameLike: "",
             dataErro: "",
             townDatas: ["全部"],
-            checkProgress: ["全部", ...statusdata.townCheck],
+            checkProgress: [ 
+                { name: "全部", val: null },
+                { name: "通过", val: 1 },
+                { name: "未通过", val: 2 },
+                { name: "待审核", val: 3 }],
             townCheckText:statusdata.townCheckText,
             dataTime: [{ name: "全部", val: "" }, ...dataTime],
             errors: [
                 { name: "全部", val: "" },
-                { name: "是", val: 1 },
-                { name: "否", val: 0 }
+                { name: "有", val: 1 },
+                { name: "无", val: 0 }
             ],
             total: 0,
             pageSize: 10,
@@ -234,7 +238,7 @@ export default {
     },
     mounted() {
         this.town = this.$route.query.town || "全部";
-        this.year = this.$route.query.year || "";
+        this.year = this.$route.query.year || 2018;
         this.toHtmlStr = toHtmlStr;
         this.getTownList();
         this.fetchData();
@@ -261,7 +265,7 @@ export default {
             const params = {
                 entNameLike: this.entNameLike,
                 dataYear: this.year,
-                status: this.status == "全部" ? "" : this.status,
+                townStatus: this.townStatus,
                 town: this.town == "全部" ? "" : this.town,
                 dataErro: this.dataErro,
                 pageSize: this.pageSize,
@@ -301,9 +305,7 @@ export default {
         keyForRow(row) {
             return row.entNameLike;
         },
-        handleViewDetailClick(row) {
-//            console.log(row);
-
+        handleViewDetailClick(row,index) {
             let start = row.startTime;
             let end = row.endTime;
             let flag = nowInDateBetwen(start, end);
@@ -316,21 +318,78 @@ export default {
                     type: "warning"
                 });
             } else {
+                setLocalStorage('townList',JSON.stringify(this.dataList));
                 gotoGovURL(
                     `companyPaperDetail.html?action=townCheck&creditCode=${
                         row.creditCode
                     }&dataYear=${row.dataYear}&entName=${
                         row.entName
-                    }&townStatus=${row.townStatus}`
+                    }&townStatus=${row.townStatus}&index=${index}`
                 );
             }
-        },
-        backToPrevPage() {
-            this.$router.go(-1);
         }
     }
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
+    @import "../../common/less/reset.less";
+    @import "../../common/less/paperCommon";
+    @import "../../common/less/base";
+    #townCheckPageOuter{
+        margin-top: 10px;
+    #townCheckPageCOuter{
+        min-width: 1100px;
+    .bg-com;
+    .select-items{
+        &>div{
+              border:none;
+              width: 110px;
+          }
+        }
+
+        }
+    }
+    .el-select-dropdown__item {
+        padding: 0 20px;
+    }
+    .el-table {
+        &::-webkit-scrollbar-track {
+             display: none;
+         }
+        th {
+            text-align: center;
+            background-color: #fafafa;
+        }
+        td, .el-pagination {
+            text-align: center;
+        }
+    }
+
+    .el-pagination.is-background .el-pager li:not(.disabled).active{
+        background: @hoverColor;
+    }
+    .el-date-editor.el-range-editor.el-input__inner.el-date-editor--daterange {
+        width: 360px !important;
+        border: 1px solid #e3eaf1 !important;
+    .el-range__icon,
+    .el-range__close-icon,
+    .el-range-separator {
+        height: 32px;
+    }
+    }
+    .el-select {
+        .el-input .el-input__inner,
+        .el-input__icon {
+            height: 32px !important;
+            line-height: 32px !important;
+        }
+    }
+    .el-select-dropdown__item {
+        text-align: center;
+    }
+
+    .el-date-editor .el-range-separator {
+        width: auto;
+    }
 </style>

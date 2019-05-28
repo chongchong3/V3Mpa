@@ -184,7 +184,7 @@
                 <div class="noData-img"></div>
                 <div class="noData-desc">
                     <p>暂无数据</p>
-                    <p>Have no Message</p>
+                    <p>Have no Data</p>
                 </div>
             </el-col>
         </el-row>

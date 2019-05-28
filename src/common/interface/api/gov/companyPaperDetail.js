@@ -81,22 +81,19 @@ export const insertLandImg = (params)=>{
     return axios.postForm('/gov/selfCheck/insertLandImg', params)
 }
 
-export const updateOrAddTaxData = (params) => {
-    return axios.request({
-        url: '/gov/selfCheck/updateOrAddTaxData',
-        params,
-        emulateJSON: false
-    })
-    
+
+export const updateOrAddStaticsData = (params)=>{
+    return axios.postForm('/gov/selfCheck/updateOrAddStaticsData',params)
 }
-export const updateOrAddStaticsData = (params) => {
-    return axios.request({
-        url: '/gov/selfCheck/updateOrAddStaticsData',
-        params,
-        emulateJSON: false
-    })
-    
+
+export const updateOrAddTaxData = (params)=>{
+    return axios.postForm('/gov/selfCheck/updateOrAddTaxData',params)
 }
+export const updateOrAddEnvironmentData = (params)=>{
+    return axios.postForm('/gov/selfCheck/updateOrAddEnvironmentData',params)
+}
+
+
 export const updateInputLandData = (params) => {
     return axios.request({
         url: '/gov/selfCheck/updateInputLandData',
@@ -130,14 +127,7 @@ export const reject = (params) => {
     
 }
 
-export const updateOrAddEnvironmentData = (params) => {
-    return axios.request({
-        url: '/gov/selfCheck/updateOrAddEnvironmentData',
-        params,
-        emulateJSON: false
-    })
-    
-}
+
 
 export const toUpdate = (params) => {
     return axios.request({
@@ -186,3 +176,7 @@ export const complain = (params) => {
     
 }
 
+//撤回
+export const recall=(params)=>{
+    return axios.get('/gov/selfCheck/backStatus',params)
+}

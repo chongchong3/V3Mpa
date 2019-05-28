@@ -1,29 +1,35 @@
 <template>
     <BasePage>
         <div class="container-1200">
-            <div class="topbox">
-                <div class="leftbox">
-                    <div class="companybox">
-                        <p class="name">
-                            <i class="iconfont icon-qiyetubiaox"></i>
-                            {{ toHtmlStr(ent1.entName, "") }}
-                            <!-- ${toHtmlStr(ent.entName,'')} -->
-                        </p>
-                        <p class="address companyInfo">
-                            <span>法定代表人：{{ ent1.frName }}</span>
-                            <span>注册资本：{{ ent1.regCap }}万元</span>
-                            <span>所属乡镇：{{ ent2.town }}</span>
-                            <span>企业规模：{{ ent2.entRule }}</span>
-                        </p>
-                        <p class="address">
+            <div class="ys-back-btn" @click="goBack"></div>
+            <el-row>
+                <el-col :span="24" class="topbox">
+                    <div class="leftbox">
+                        <div class="companybox">
+                            <p class="name">
+                                <i class="iconfont icon-qiyetubiaox"></i>
+                                {{ toHtmlStr(ent1.entName, "") }}
+                            </p>
+                            <p class="address companyInfo">
+                                <span>法定代表人：{{ ent1.frName }}</span>
+                                <span>注册资本：{{ ent1.regCap }}万元</span>
+                                <span v-if="ent2.town">所属乡镇：{{ ent2.town }}</span>
+                                <span v-if="ent2.entRule">企业规模：{{ ent2.entRule }}</span>
+                            </p>
+                            <p class="address">
                             <span class="dizhiblock"
-                                >地址：{{ ent1.address }}</span
+                            >地址：{{ ent1.address }}</span
                             >
-                        </p>
+                            </p>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <Tabs :tabName="tabName" :creditCode="creditCode"></Tabs>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="24">
+                    <Tabs :tabName="authorizationData" :creditCode="creditCode" v-if="ascynData"></Tabs>
+                </el-col>
+            </el-row>
         </div>
     </BasePage>
 </template>
@@ -33,9 +39,7 @@ import BasePage from "@/components/BasePage";
 import * as inter from "@api/gov/entDetail";
 
 import { getUrlParam, toHtmlStr } from "@/common/utils/index.js"; //跳转路径
-
 import Tabs from "@/components/tabs";
-import store from "@/store.js";
 
 export default {
     data() {
@@ -43,20 +47,18 @@ export default {
             toHtmlStr: toHtmlStr,
             ent1: {},
             ent2: {},
-            tabName: [
-                { name: "0", label: "经营情况" },
-                { name: "1", label: "问题反馈" },
-                { name: "2", label: "关系图谱" },
-                { name: "3", label: "持股人图谱" },
-                { name: "4", label: "最终持股人" },
-                { name: "5", label: "知识产权" },
-                { name: "6", label: "工商登记信息" },
-                { name: "7", label: "司法诉讼" }
-            ],
-            creditCode: ""
+            creditCode: "",
+            authorizationData:[], //企业档案tab权限
+            ascynData: false
         };
     },
-    created() {},
+    created() {
+        this.$store.commit({
+            type: "setCurModAuthority",
+            np: window.location.pathname.split("/").reverse()[0]
+        });
+        this.controlPermission();
+    },
     mounted() {
         let params = {
             entName: getUrlParam("entName")
@@ -64,9 +66,8 @@ export default {
         inter.queryEnt(params).then(res => {
             if (res.code === "0000" && res.data !== null) {
                 this.ent1 = res.data;
-                //   store.commit('GET_CREDIT_CODE',res.data.creditCode)
                 this.creditCode = res.data.creditCode;
-                //   console.log(this.creditCode,'1')
+                this.ascynData = true;
             }
         });
         inter.queryEntSql(params).then(res => {
@@ -80,9 +81,19 @@ export default {
                 }
                 this.ent2 = res.data;
             }
-        });
+        });        
     },
-    methods: {},
+    methods: {
+        controlPermission() {
+            let curModAuthorityList = this.$store.state.curModAuthority || [];
+            this.authorizationData = curModAuthorityList.children.map((v,index)=>{
+                return { name:index+'', label: v.name }
+            }) || [];
+        },
+        goBack() {
+            history.go(-1);
+        }
+    },
     components: {
         BasePage,
         Tabs
@@ -93,10 +104,9 @@ export default {
 <style lang="less">
 @import '../../common/less/base';
 .container-1200 {
-    width: 1200px;
-    margin: 10px auto;
+    width: 1100px;
+    margin: 0px auto;
 }
-
 .topbox {
     display: flex;
     -webkit-box-pack: justify;
@@ -281,34 +291,31 @@ export default {
                                         }
                                     }
                                     .th {
-                                        width: 36%;
+                                        width: 45%;
                                         color: #666;
                                     }
-                                    .th>.border{
-                                        border-left:  1px solid #eeeeee;
+                                    .th{
                                         border-bottom: 1px solid #eeeeee;
                                         border-right: 1px solid #eeeeee;
                                         background-color: #f7f9fc;
                                     }
                                     .td {
-                                        width: 64%;
+                                        width: 55%;
                                         color: #333;
                                     }
-                                    .td>.border{
+                                    .td{
+                                        border-right: 1px solid #eeeeee;
                                         border-bottom: 1px solid #eeeeee;
                                     }
                                 }
                             }
-                            .info-table .tables:nth-of-type(-n+3) .th .border{
+                            .info-table .tables:nth-of-type(-n+3) .th {
                                 border-top: 1px solid #eeeeee;
                             }
-                            .info-table .tables:nth-of-type(3n+0) .td .border{
-                                border-right: 1px solid #eeeeee;
+                            .info-table .tables:nth-of-type(3n+1) .th {
+                                border-left: 1px solid #eeeeee;
                             }
-                            .info-table .tables:last-child .td .border{
-                                border-right: 1px solid #eeeeee;
-                            }
-                            .info-table .tables:nth-of-type(-n+3) .td .border{
+                            .info-table .tables:nth-of-type(-n+3) .td {
                                 border-top: 1px solid #eeeeee;
                             }
                         }

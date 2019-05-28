@@ -11,6 +11,10 @@ export const queryEntSql = (params) => {
 export const showYear = (params) => {
     return axios.get('/gov/selfCheck/showYear', params);
 }
+//获取是否审核通过
+export const showPass = (params) => {
+    return axios.get('/gov/selfCheck/showPass', params);
+}
 
 //经营数据
 export const showManagementData = (params) => {

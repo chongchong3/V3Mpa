@@ -169,9 +169,7 @@ export default new Vuex.Store({
         //entDatail获取creditCode
         getCreditCode({ commit }, creditCode) {
             commit('GET_CREDIT_CODE', creditCode);
-        }
-
-
+        },
     },
     modules: {}
 })

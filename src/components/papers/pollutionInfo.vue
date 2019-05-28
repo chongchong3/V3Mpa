@@ -71,7 +71,7 @@
                   :class="fileArr.includes(item.key)==false?'disableStatus1':''"
                 >{{fileArr.includes(item.key)!==true?'已确认':'确认无误'}}</button>
               </div>
-              <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr&&param.userType=='6'">
+              <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr">
                 <div v-if="fileArr.includes(item.key)">
                   <button class="sendIdea" @click="backReason(item.key,$event,'驳回原因')">驳回</button>
                   <button class="sureIdea" @click="backReason(item.key,$event,'修改')">修改</button>
@@ -121,7 +121,7 @@
                   :class="fileArr.includes(item.key)==false?'disableStatus1':''"
                 >{{fileArr.includes(item.key)!==true?'已确认':'确认无误'}}</button>
               </div>
-              <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr&&param.userType=='6'">
+              <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr">
                 <!-- <span>{{item.key}}</span> -->
                 <div v-if="fileArr.includes(item.key)">
                   <button class="sendIdea" @click="backReason(item.key,$event,'驳回原因')">驳回</button>

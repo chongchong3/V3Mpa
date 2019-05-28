@@ -83,7 +83,7 @@
                             <template slot-scope="scope">
                                 <span
                                     @click="goToEntFile(scope.row.entName)"
-                                    style="cursor: pointer"
+                                    class="ent-name"
                                     >{{ scope.row.entName }}</span
                                 >
                             </template>
@@ -143,7 +143,7 @@
                     <div class="noData-img"></div>
                     <div class="noData-desc">
                         <p>暂无数据</p>
-                        <p>Have no Message</p>
+                        <p>Have no Data</p>
                     </div>
                 </div>
             </div>
@@ -304,9 +304,12 @@ export default {
 }
 .el-pagination {
     text-align: center;
-    margin-top: 25px !important;
+    /*margin-top: 25px !important;*/
 }
-
+.el-table__body-wrapper{
+    overflow: unset !important;
+    overflow-y: scroll !important;
+}
 .el-pagination.is-background .el-pager li:not(.disabled).active {
     background: @hoverColor;
 }

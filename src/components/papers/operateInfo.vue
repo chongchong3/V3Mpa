@@ -158,7 +158,7 @@ export default {
         .then(res => {
           if (res.code == "0000" && res.data !== null) {
             this.operateList = Object.assign({}, this.operateList, res.data);
-            console.log(this.operateList,'lll')
+//            console.log(this.operateList,'lll')
             this.tempIndus = this.operateList.actualBusiness;
              let aa = Array.of();
             if (res.data.actualBusiness!=='') {

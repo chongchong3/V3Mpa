@@ -490,43 +490,522 @@ export const landData = {
 /** 企业档案筛选项 */
 // 注册资本
 export const regCapDatas = [
-    { regCap: '', name: '全部' },
+    { regCap: '-', name: '全部' },
     { regCap: '0-100', name: '100万以下' },
     { regCap: '100-500', name: '100万-500万' },
     { regCap: '500-1000', name: '500万-1000万' },
     { regCap: '1000-3000', name: '1000万-3000万' },
-    { regCap: "3000-''", name: '3000万以上' }];
+    { regCap: "3000-", name: '3000万以上' }];
 //注册时间
 export const esdateDatas = [
-    { esdate: '', name: '全部' },
+    { esdate: '-', name: '全部' },
     { esdate: '0-1', name: '1年以下' },
     { esdate: '1-3', name: '1-3年' },
     { esdate: '3-5', name: '3-5年' },
     { esdate: '5-10', name: '5-10年' },
-    { esdate: "10-''", name: '10年以上' }];
+    { esdate: "10-", name: '10年以上' }];
 export const companyType = [{ name: '有专利', key: 'isPatent' }, { name: '有软著', key: 'isSoftware' }, { name: '有商标', key: 'isTrademark' }];
 // 企业规模
 export const entRuleDatas = [{ name: '全部', value: '' }, { name: '规上工业企业', value: 0 }, { name: '规下工业企业', value: 1 }];
 // 经营状态
 export const businessStatusDatas = [{ name: '全部' }, { name: '在营（开业）' }, { name: '注销' }, { name: '吊销' }];
 
+/** 企业档案详情页经营情况数据 */
+export const businessDataInEntDetail = [
+        {
+            key:'businessData',
+            category:'基本信息',
+            title: "基本信息",
+            children: [
+                {
+                    name: "企业负责人",
+                    key: "frName"
+                },
+                {
+                    name: "负责人联系方式",
+                    key: "frTel"
+                },
+                {
+                    name: "填报人",
+                    key: "applicant"
+                },
+                {
+                    name: "填报人联系方式",
+                    key: "applicantTel"
+                },
+                {
+                    name: "实际经营业务",
+                    key: "actualBusiness"
+                }
+            ]
+        },
+        {
+            key:'totalMuIndex',
+            category:'亩均指标',
+            title: "总量指标",
+            children: [
+                {
+                    name: "用地面积（亩）"
+                    // key: "frName"
+                },
+                {
+                    name: "税收实际贡献（万元）"
+                    // key: "frTel"
+                },
+                {
+                    name: "工业增加值（万元）"
+                    // key: "applicant"
+                },
+                {
+                    name: "综合能耗（吨标煤）"
+                    // key: "applicant"
+                },
+                {
+                    name: "研发经费支出（万元）"
+                    // key: "frName"
+                },
+                {
+                    name: "主营业务收入（万元）"
+                    // key: "frTel"
+                },
+                {
+                    name: "年平均职工人数（人）"
+                    // key: "applicant"
+                },
+                {
+                    name: "固定资产投资（万元）"
+                    // key: "applicant"
+                },
+                {
+                    name: "年实际用电量（万千瓦时）"
+                    // key: "applicant"
+                },
+                {
+                    name: "年实际用水量（万立方米）"
+                    // key: "applicant"
+                }
+            ]
+        },
+        {
+            key:'perMuIndex',
+            category:'亩均指标',
+            title: "亩均指标",
+            children: [
+                {
+                    name: "亩均税收（万元/亩）"
+                    // key: "frName"
+                },
+                {
+                    name: "亩均增加值（万元/亩）"
+                    // key: "frTel"
+                },
+                {
+                    name: "单位能耗增加值（万元/吨标煤）"
+                    // key: "applicant"
+                },
+                {
+                    name: "R&D经费支出占比（%）"
+                    // key: "applicant"
+                },
+                {
+                    name: "全员劳动生产率（万元/人年）"
+                    // key: "frName"
+                },
+                {
+                    name: "单位排放增加值（万元/吨标煤）"
+                    // key: "frTel"
+                }
+            ]
+        },
+        {
+            key:'logLand',
+            category:'用地数据',
+            title: "登记土地",
+            children: [
+                {
+                    name: "土地使用权面积",
+                    key: "landUseArea"
+                },
+                {
+                    name: "不动产权证号",
+                    key: "realPropertyNumber"
+                },
+                {
+                    name: "土地坐落",
+                    key: "landLocated"
+                },
+                {
+                    name: "供地日期",
+                    key: "landSupply"
+                }
+            ]
+        },
+        {
+            key:'rentInLand',
+            category:'用地数据',
+            title: "承租土地",
+            children: [
+                {
+                    name: "出租方统一社会信用代码",
+                    key: "lessorCreditCode"
+                },
+                {
+                    name: "出租方企业名称",
+                    key: "lessor"
+                },
+                {
+                    name: "不动产权证号",
+                    key: "realPropertyNumber"
+                },
+                {
+                    name: "承租用地面积（亩）",
+                    key: "areaOfInLand"
+                },
+                {
+                    name: "土地坐落",
+                    key: "areaOfInLand"
+                },
+                {
+                    name: "租期起",
+                    key: "rentBegin"
+                },
+                {
+                    name: "租期止",
+                    key: "rentEnd"
+                },
+                {
+                    name: "出租方联系方式",
+                    key: "lessorTel"
+                },
+                {
+                    name: "年实际用水量（万立方米）",
+                    key: "waterTotal"
+                },
+                {
+                    name: "年实际用电量（万千瓦时）",
+                    key: "electricityTotal"
+                }
+            ]
+        },
+        {
+            key:'rentOutLand',
+            category:'用地数据',
+            title: "出租土地",
+            children: [
+                {
+                    name: "承租方统一社会信用代码",
+                    key: "lesseeCreditCode"
+                },
+                {
+                    name: "承租方企业名称",
+                    key: "lessee"
+                },
+                {
+                    name: "不动产权证号",
+                    key: "realPropertyNumber"
+                },
+                {
+                    name: "出租用地面积（亩）",
+                    key: "areaOfOutLand"
+                },
+                {
+                    name: "土地坐落",
+                    key: "landLocated"
+                },
+                {
+                    name: "租期起",
+                    key: "rentBegin"
+                },
+                {
+                    name: "租期止",
+                    key: "rentEnd"
+                },
+                {
+                    name: "承租方联系方式",
+                    key: "lesseeTel"
+                },
+                {
+                    name: "年实际用水量（万立方米）",
+                    key: "waterTotal"
+                },
+                {
+                    name: "年实际用电量（万千瓦时）",
+                    key: "electricityTotal"
+                }
+            ]
+        },
+        {
+            key:'otherLand',
+            category:'用地数据',
+            title: "其他土地",
+            children: [
+                {
+                    name: "用地性质",
+                    key: "landType"
+                },
+                {
+                    name: "其他用地面积（亩）",
+                    key: "otherLand"
+                },
+                {
+                    name: "土地坐落",
+                    key: "landLocated"
+                },
+                {
+                    name: "备注",
+                    key: "remark"
+                }
+            ]
+        },
+        {
+            key:'taxData',
+            category:'税务数据',
+            title: "经营数据",
+            children: [
+                {
+                    name: "规下企业主营业务收入（万元）",
+                    key: "mainServiceIncome"
+                },
+                {
+                    name: "应税销售收入（万元）",
+                    key: "taxableSaleIncome"
+                },
+                {
+                    name: "利润总额（万元）",
+                    key: "totalProfit"
+                },
+                {
+                    name: "固定资产投资（万元）",
+                    key: "fixedAssetsInvestment"
+                }
+            ]
+        },
+        {
+            key:'taxData',
+            category:'税务数据',
+            title: "税务数据",
+            children: [
+                {
+                    name: "税收实际贡献（万元）",
+                    key: "taxRevenue"
+                },
+                {
+                    name: "增值税（万元）",
+                    key: "incrementTax"
+                },
+                {
+                    name: "增值税净入库数（万元）",
+                    key: "incrementTax"
+                },
+                {
+                    name: "出口企业“免抵”税额（万元）",
+                    key: "exportTax"
+                },
+                {
+                    name: "增值税先征后退（福利企业）（万元）",
+                    key: "retreatInAdvanceTax"
+                },
+                {
+                    name: "增值税即征即退（资源综合利用）（万元）",
+                    key: "immediateWithdrawalTax"
+                },
+                {
+                    name: "房产税（万元）",
+                    key: "personTax"
+                },
+                {
+                    name: "城镇土地使用税（万元）",
+                    key: "cityLandTax"
+                },
+                {
+                    name: "车船税（万元）",
+                    key: "carTax"
+                },
+                {
+                    name: "土地增值税（万元）",
+                    key: "landIncrementTax"
+                },
+                {
+                    name: "印花税（万元）",
+                    key: "yhTax"
+                },
+                {
+                    name: "城市维护建设税（万元）",
+                    key: "cswhTax"
+                },
+                {
+                    name: "资源税（万元）",
+                    key: "resourceTax"
+                },
+                {
+                    name: "教育费附加（万元）",
+                    key: "jyfj"
+                },
+                {
+                    name: "地方教育附加（万元）",
+                    key: "placeJyfj"
+                },
+                {
+                    name: "环境保护税（万元）",
+                    key: "hjbhTax"
+                }
+            ]
+        },
+        {
+            key:'statisticData',
+            category:'统计数据',
+            title: "统计数据",
+            children: [
+                {
+                    name: "工业产值（万元）",
+                    key: "industryValue"
+                },
+                {
+                    name: "工业增加值（万元）",
+                    key: "industryAddValue"
+                },
+                {
+                    name: "研发经费支出（万元）",
+                    key: "researchMoney"
+                },
+                {
+                    name: "年平均职工人数（人/年）",
+                    key: "yearAverageWorker"
+                },
+                {
+                    name: "规上企业主营业务收入（万元）",
+                    key: "upRuleIncome"
+                },
+                {
+                    name: "综合能耗（吨标煤）",
+                    key: "allEnergyConsume"
+                },
+                {
+                    name: "原煤（吨）",
+                    key: "coalTotal"
+                },
+                {
+                    name: "蒸汽（百万千焦）",
+                    key: "streamTotal"
+                },
+                {
+                    name: "天然气（万立方米）",
+                    key: "naturalGasTotal"
+                }
+            ]
+        },
+    {
+        key:'waterData',
+        category:'用水数据',
+        title: "用水数据",
+        children: [
+            {
+                name: "水表户名",
+                key: "waterMeterName"
+            },
+            {
+                name: "水表户号",
+                key: "waterMeterNumber"
+            },
+            {
+                name: "自来水（万立方米）",
+                key: "waterConsumption"
+            },
+            {
+                name: "自取水（万立方米）",
+                key: "selfExtractingWater"
+            }
+        ]
+    },
+    {
+        key:'electricData',
+        category:'用电数据',
+        title: "用电数据",
+        children: [
+            {
+                name: "电表户名",
+                key: "ammeterName"
+            },
+            {
+                name: "电表户号",
+                key: "ammeterNum"
+            },
+            {
+                name: "用电量（万千瓦时）",
+                key: "electricityConsumption"
+            }
+        ]
+    },
+        {
+            key:'pollutionRight',
+            category:'排污数据',
+            title: "排污权",
+            children: [
+                {
+                    name: "化学需氧量排污权（吨）",
+                    key: "needOxygenRight"
+                },
+                {
+                    name: "二氧化硫排污权（吨）",
+                    key: "sulfurDioxideRight"
+                },
+                {
+                    name: "氨氮排污权（吨）",
+                    key: "ammoniaNitrogenRight"
+                },
+                {
+                    name: "氮氧化物排污权（吨）",
+                    key: "nitrogenOxidesRiight"
+                }
+            ]
+        },
+        {
+            key:'pollutionRight',
+            category:'排污数据',
+            title: "排放量",
+            children: [
+                {
+                    name: "化学需氧量排放量（吨）",
+                    key: "needOxygenDischarge"
+                },
+                {
+                    name: "二氧化硫排放量（吨）",
+                    key: "sulfurDioxideDischarge"
+                },
+                {
+                    name: "氨氮排放量（吨）	",
+                    key: "ammoniaNitrogenDischarge"
+                },
+                {
+                    name: "氮氧化物排放量（吨）",
+                    key: "nitrogenOxidesDischarge"
+                }
+            ]
+        }
+    ];
+
 export const statusdata = {
     townCheck: ['通过', '未通过', '待审核'],
     appealRecord: ['已驳回', '已修改', '未处理'],
     appealRecordList: [
         {
-            label: '已驳回',
-            value: 3
-        }, {
-            label: '已修改',
-            value: 1
-        }, {
+            label:'审核不通过',
+            value:4
+        },
+        // {
+        //     label: '已驳回',
+        //     value: 3
+        // }, {
+        //     label: '已修改',
+        //     value: 1
+        // },
+        {
             label: '未处理',
             value: 2
         }
     ],
     townCheckText: ['','通过', '未通过', '待审核','未通过'],
-    checkProgress: ['未填报', '已填报', '已提交', '乡镇退回', '审核通过', '驳回复核'],
+    checkProgress: ['未填报', '已填报', '已提交', '乡镇退回', '审核通过', '企业复核'],
     checkProcess: [
         {
             status: 1,
@@ -545,7 +1024,7 @@ export const statusdata = {
             name: '审核通过'
         }, {
             status: 6,
-            name: '驳回复核'
+            name: '企业复核'
         }
     ]
 }
@@ -576,6 +1055,7 @@ export const appealTypeList = [
 ]
 export const longYouTowns = ['龙州街道', '东华街道', '湖镇镇', '小南海镇', '詹家镇', '溪口镇', '横山镇', '塔石镇', '罗家乡', '庙下乡', '石佛乡', '社阳乡', '大街乡', '牧尘畲族乡', '模环乡', '经济开发区(北)', '经济开发区(南)'];
 
+/**问题反馈数据*/
 export const linHaiData = {
     orderStauts: [{
         name: '已派单',
