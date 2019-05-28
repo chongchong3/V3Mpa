@@ -1,0 +1,789 @@
+@import './base';
+@borderColor:#E3EAF1;
+@inputBg:rgba(0,0,0,.04);
+@inputBorder:#D9D9D9;
+@fontNorma:#9399A5;
+@successColor:#5C7CEC;
+@errorColor:#FF6D60;
+@wanchenColor:#25B499;
+@inputText:rgba(0, 0, 0, 0.25);
+@defaultBlueColor:#6B8AF0;
+
+.bg-com{
+  //margin:10px;
+  background-color: @bgContentColor;
+}
+.flx{
+  display: flex;
+  align-items: center;
+}
+//选择条件下拉项的公共样式
+.sel-condition{
+  font-size: 12px;
+  padding:20px;
+  width: 100%;
+  height:58px;
+  justify-content: space-between;
+  border-bottom:1px solid rgba(235, 235, 235, 1);
+  background-color: #fff;
+  .flx;
+  .sel-content{
+    flex: 9;
+    .flx;
+    justify-content: flex-start;
+    &>div{
+      margin-right:20px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      white-space : nowrap !important;
+      &>div{
+        width: 100px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 4px;
+        background-color: #fff;
+        //border: 1px solid @borderColor;
+        &>input{
+          width: 100%;
+          height: 100%;
+          border: 1px solid @borderColor;
+        }
+        .start{
+          width: 100%;
+          height: 100%;
+          border:none;
+          border: 1px solid @borderColor;
+        }
+      }
+      .status{
+        border: 1px solid @borderColor;
+        width: 150px;
+        .flx;
+        justify-content: space-between;
+        span{
+          flex: 1;
+          display: inline-block;
+          text-align: center;
+          line-height: 30px;
+          height: 100%;
+          border-right:1px solid @borderColor;
+          &:last-child{
+            border-right:none;
+          }
+        }
+        .sel_on{
+          color:#fff;
+          background: @hoverColor;
+          cursor: pointer;
+        }
+      }
+      .ys-dropdown-outer{
+        height: 100%;
+        .btn.ys-dropdown-btn{
+          height: 100%;
+          .ys-dropdown-value{
+            line-height:26px;
+            font-size: 12px;
+            text-align: left;
+          }
+          i{
+            line-height:26px;
+          }
+        }
+      }
+    }
+    &>div:last-child{
+      margin:0;
+    }
+  }
+}
+.sel-btn{
+  flex: 1;
+  .flx;
+  justify-content: flex-end;
+  .right-btn{
+    width: 98px;
+    height: 26px;
+    border-radius: 2px;
+    color:@hoverColor;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(107, 147, 255, 0.2);
+    cursor: pointer;
+  }
+}
+.sel-text{
+  height: 26px;
+  //min-width:270px;
+  border-radius: 4px;
+  border:1px solid @inputBorder;
+  position: relative;
+  input{
+    padding: 0 5px;
+    background: @inputBg;
+    width: 100%;
+    height:100%;
+    border:none;
+  }
+  i{
+    position: absolute;
+    top:50%;
+    margin-top: -9px;
+    right:5px;
+    color:@inputText;
+  }
+}
+.result-list{
+  padding:20px 20px 0;
+}
+.search-btn{
+  width: 60px;
+  height: 26px;
+  text-align: center;
+  line-height: 26px;
+  color: @successColor;
+  background-color: rgba(107,147,255,.2);
+  border-radius: 4px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+//我的问题，问题流转样式
+.result-list{
+  width:100%;
+  padding:20px 20px 0 20px;
+
+  //&:last-child {
+  //  padding-bottom: 20px;
+  //}
+  .wareList{
+    width:100%;
+    min-height: 152px;
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.08), inset 0px -1px 0px 0px rgba(235, 235, 235, 1);
+    margin-bottom: 10px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    &-top{
+      width:100%;
+      min-height:112px;
+      padding:15px 20px;
+      padding-bottom: 0;
+      border-bottom: 1px solid #EBEBEB;
+      font-size: 12px;
+      &-title{
+        font-size: 14px;
+        color:#455467;
+        margin-bottom: 6px;
+
+        display: flex;
+        .wareList-bott-question{
+          padding:0 6px;
+          height:20px;
+          line-height: 20px;
+          background: rgba(255, 109, 96, 0.1);
+          color: #FF6D60;
+          font-size: 12px;
+          margin-left:10px;
+        }
+        .wareList-bott-name{
+          font-weight: 600;
+        }
+
+      }
+      &-desc{
+        color:#9399A5;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp:2;
+        -webkit-box-orient: vertical;
+        line-height: 20px;
+      }
+        
+      &-process{
+        width:100%;
+        //min-height:30px;
+        //background: rgba(0,0,0,0.04);
+        margin-top: 10px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        .pross{
+          padding:2px 4px;
+          height:24px;
+          border:1px solid @successColor;
+          border-radius: 2px;
+          position: relative;
+          color:@successColor;
+          margin-right:30px;
+          margin-bottom: 15px;
+          &:after{
+            content:">";
+            position: absolute;
+            top:2px;
+            right:-20px;
+            font-weight: 500;
+            color:@successColor;
+
+          }
+        }
+        .pross:last-child{
+          &:after{
+            content: "";
+          }
+        }
+        .noHandle{
+          color:@errorColor;
+          border:1px solid @errorColor;
+        }
+        .complete{
+          color:@wanchenColor;
+          border:1px solid @wanchenColor;
+        }
+      }
+
+        .back-reason {
+            font-size: 12px;
+            color: #9399a5;
+            margin-top: 10px;
+            .back-reason-title {
+                color: #ff6d60;
+            }
+        }
+    }
+    &-bott{
+      height:40px;
+      width:100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding:0 20px;
+      font-size: 12px;
+      .wareList-bottLeft{
+        display: flex;
+        color:@successColor;
+        align-items: center;
+        .wareList-bott-question{
+          padding:0 6px;
+          height:20px;
+          line-height: 20px;
+          background: rgba(92, 124, 236, 0.1);
+        }
+        .time{
+          color:#9399A5;
+        }
+        .qsk{
+          margin-right:20px;
+        }
+
+      }
+      .wareList-bottRight{
+          display: flex;
+         
+        .btn-link{
+          text-decoration: none;
+          font-size: 12px;
+            cursor: pointer;
+            margin-left: 15px;
+            i {
+                font-size: 12px;
+            }
+        }
+        .btn-back,.btn-supervision{
+          color:@errorColor;
+        }
+        .btn-resolve{
+          color:@successColor;
+        }
+
+          .modify-question,
+          .delete-question {
+              color: #5C7CEC;
+              font-size: 12px;
+              cursor: pointer;
+          }
+          .delete-question {
+              color: #FFAF6B;
+              margin-left: 15px;
+          }
+      }
+
+    }
+  }
+}
+
+@media screen and (max-width: 1366px) {
+  .sel-btn{
+    .right-btn{
+      width: 70px;
+    }
+  }
+  .search-btn{
+    width:50px;
+  }
+  .sel-text{
+    min-width:240px;
+  }
+  .sel-condition .sel-content>div{
+    margin-right:2px;
+  }
+}
+
+//问题详情页顶部样式
+.companyBox {
+  min-height: 148px;
+  width: 100%;
+  padding: 16px 20px;
+  background-color: #fff;
+  border-bottom: 1px solid rgba(242, 244, 247, 1);
+
+  .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 26px;
+
+    .name {
+      color: rgba(64, 72, 93, 1);
+      font-size: 24px;
+      text-align: justify;
+      font-family: PingFangSC-Semibold;
+      margin-right: 7px;
+      i {
+        color: rgba(64, 72, 93, 1);
+        font-size: 24px;
+      }
+    }
+    .labels-outer {
+      & > span {
+        height: 18px;
+        line-height: 18px;
+        border-radius: 2px;
+        background-color: rgba(92, 124, 236, 0.1);
+        padding: 3px 8px;
+        color: rgba(92, 124, 236, 1);
+        font-size: 12px;
+        font-family: PingFangSC-Regular;
+        margin-right: 7px;
+      }
+    }
+  }
+  & > p {
+    color: rgba(132, 139, 158, 1);
+    font-size: 14px;
+    text-align: justify;
+    font-family: PingFangSC-Medium;
+    margin-bottom: 15px;
+    &:last-child {
+        margin-bottom: 0;
+        margin-top: 10px;
+    }
+    & > span {
+      margin-right: 164px;
+    }
+  }
+}
+
+//问题详情页流程样式
+.problem-process {
+  background-color: #fff;
+  margin-top: 1px;
+  padding-bottom: 30px;
+
+  &-item {
+    min-height: 150px;
+    display: flex;
+    justify-content: flex-start;
+    position: relative;
+    .left {
+      position: relative;
+      //top: 0;
+      //left: 0;
+      width: 119px;
+      min-height: 150px;
+      //position: relative;
+      .line-v {
+        position: absolute;
+        left: 42px;
+        top: 0;
+        width: 1px;
+        height: 100%;
+        border-left: 1px dotted rgba(174, 190, 255, 1);
+      }
+      .line-h {
+        position: absolute;
+        right: 19px;
+        left: 45px;
+        top: 85px;
+        height: 1px;
+        border-bottom: 1px dashed rgba(174, 190, 255, 1);
+
+        &::after {
+          content: '';
+          position: absolute;
+          right: -6px;
+          top: -2px;
+          display: inline-block;
+          width: 5px;
+          height: 5px;
+          border-radius: 2.5px;
+          background-color: rgba(174, 190, 255, 1);
+        }
+      }
+      .stepNumber {
+        position: absolute;
+        left: 25px;
+        top: 68px;
+        width: 34px;
+        height: 34px;
+        border-radius: 17px;
+        background-color: rgba(107, 138, 240, 1);
+        border: 5px solid rgba(227, 232, 255, 1);
+        color: rgba(255, 255, 255, 1);
+        font-family: PingFangSC-Medium;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+      }
+    }
+    .right {
+      position: relative;
+      width: 65%;
+      .item-content {
+        margin-top: 25px;
+        min-height: 120px;
+        border-radius: 2px;
+        background-color: rgba(255, 255, 255, 1);
+        box-shadow: 0px 2px 8px 0px rgba(222, 222, 222, 0.5);
+
+        &-top {
+          height: 50px;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          padding: 0 19px;
+          .departmentName {
+            color: rgba(112, 123, 139, 1);
+            font-size: 14px;
+            text-align: left;
+            font-family: PingFangSC-Medium;
+          }
+          .question-type {
+            width: 67px;
+            height: 22px;
+            line-height: 22px;
+            border-radius: 11px;
+            background-color: rgba(230, 236, 255, 1);
+            color: rgba(107, 138, 240, 1);
+            font-size: 12px;
+            text-align: center;
+            font-family: PingFangSC-Regular;
+          }
+          .line-h {
+            position: relative;
+            margin-left: 15px;
+            margin-right: 15px;
+            flex: 1;
+            height: 1px;
+            opacity: 0.5;
+            background-color: rgba(230, 236, 255, 1);
+            &::before,&::after {
+              content: '';
+              display: inline-block;
+              position: absolute;
+              top: -1px;
+              border-radius: 1.5px;
+              width: 3px;
+              height: 3px;
+              background-color: rgba(230, 236, 255, 1);
+            }
+            &::before {
+              left: 0;
+            }
+            &::after {
+              right: 0;
+            }
+          }
+        }
+        &-bottom {
+          padding: 10px 8px;
+          width: 100%;
+          border-radius: 2px;
+          background-color: rgba(250, 251, 255, 1);
+
+          .problem-reslove-suggestion {
+            min-height: 40px;
+            padding: 0 9px;
+            opacity: 0.8;
+            color: rgba(112, 123, 139, 1);
+            font-size: 12px;
+            line-height: 20px;
+            text-align: left;
+            font-family: PingFangSC-Regular;
+          }
+          .problem-reslove-time {
+            text-align: right;
+            line-height: 16px;
+            opacity: 0.5;
+            color: rgba(112, 123, 139, 1);
+            font-size: 12px;
+            font-family: PingFangSC-Regular;
+          }
+
+          .leader-indicate-item {
+            margin-top: 10px;
+            padding: 15px 9px;
+            line-height: 20px;
+            //min-height: 85px;
+            border-radius: 2px;
+            background-color: rgba(255, 247, 230, 1);
+            border: 1px solid rgba(255, 236, 186, 1);
+
+            .leader {
+              color: #6B8AF0;
+            }
+          }
+
+
+        }
+      }
+    }
+    &:last-child .left .line-v {
+      height: 73px;
+    }
+  }
+
+  &-item[data-state="7"] { //派单退回
+    .left .stepNumber {
+      background-color: rgba(255, 123, 123, 1);
+      border: 5px solid rgba(252, 228, 228, 1);
+    }
+    .right .item-content .item-content-top .question-type {
+      background-color: rgba(255, 232, 230, 1);
+      color: rgba(255, 112, 112, 1);
+    }
+  }
+  //&-item[data-state="7"] {
+  //  min-height: 254px;
+  //}
+
+}
+
+//部门选择样式
+.department-outer {
+  display: inline-block;
+  margin-bottom: 10px;
+
+  .department {
+    display: inline-block;
+    padding: 3px 10px;
+    min-width: 60px;
+    border-radius: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    outline: 0;
+    font-size: 12px;
+    position: relative;
+
+    height: 24px;
+    line-height: 18px;
+    background-color: rgba(240, 244, 255, 1);
+    color: @defaultBlueColor;
+    text-align: center;
+
+    .del-btn {
+      position: absolute;
+      display: none;
+      right: -7px;
+      top: -7px;
+      width: 16px;
+      height: 16px;
+      font-size: 12px;
+      line-height: 12px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      text-align: center;
+      background-color: @defaultBlueColor;
+      color: #fff;
+      cursor: pointer;
+    }
+    &:hover .del-btn{
+      display: block;
+    }
+  }
+}
+.department-outer + .addBtn {
+  display: inline-block;
+  padding: 0px 10px;
+  height: 20px;
+  line-height: 18px;
+  border-radius: 10px;
+  border: 1px dashed @defaultBlueColor;
+  color: @defaultBlueColor;
+  margin-top: 10px;
+  position: relative;
+
+  .department-list {
+    //display: none;
+    max-height: 150px;
+    overflow: auto;
+    width: 100px;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-top: 10px;
+    box-shadow: 1px 1px 5px rgba(0,0,0,.3);
+    list-style: none;
+    padding-left: 0px;
+    background-color: #fff;
+    border-radius: 4px;
+    background-color: #fff;
+    z-index: 100;
+
+    .list-item {
+      height: 24px;
+      line-height: 24px;
+      padding: 0 15px;
+      margin: 1px 0;
+      cursor: pointer;
+      //min-width: 100%;
+      box-sizing: border-box;
+      color: #333;
+      text-align: left;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+
+
+
+      &:hover {
+        background-color: rgba(24, 144, 255, .1);
+        color: @defaultBlueColor;
+      }
+    }
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+}
+
+.datepicker-input-c{
+  height: 100%;
+  padding: 0 5px;
+}
+
+//btn tip 显示tip
+.btn-see{
+  position: relative;
+  color:@textColor;
+  &:hover{
+    color:@hoverColor;
+  }
+}
+.tip{
+  display: none;
+  position: absolute;
+  top:-22px;
+  left:50%;
+  margin-left:-18px;
+  background: #66747B;
+  color:#fff;
+  width: 30px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  font-size: 12px;
+  .triangle-down{
+    position: absolute;
+    bottom:-6px;
+    left:50%;
+    margin-left:-4px;
+    width:0;
+    height:0;
+    border-left:4px solid transparent;
+    border-right:4px solid transparent;
+    border-top:6px solid #66747B;
+  }
+}
+
+input::-webkit-input-placeholder{
+  color:@inputText
+}
+input::-moz-placeholder{   /* Mozilla Firefox 19+ */
+  color:@inputText
+}
+input:-moz-placeholder{    /* Mozilla Firefox 4 to 18 */
+  color:@inputText
+}
+input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
+  color:@inputText
+}
+
+//政策和问题类型设置页公共样式
+.setting-add-btn{
+  height: 38px;
+  line-height: 38px;
+  //padding: 0 12px;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: 4px;
+  background-color: @hoverColor;
+  color: #fff;
+  width:100px;
+  margin-bottom:20px;
+  position: absolute;
+  top:20px;
+  right:20px;
+  z-index: 5;
+}
+.setting-list{
+  position: relative;
+  padding-top: 58px;
+}
+.setting-btns{
+  &>div{
+    width: 50px;
+    cursor: pointer;
+    display: inline-block;
+  }
+  .update{
+    color:@hoverColor;
+  }
+  .delete{
+    color:#FF6D60;
+  }
+}
+
+.hidden{
+  display: none;
+}
+
+#weui-picker-confirm {
+  color: #1492ff;
+}
+.weui-mask {
+  visibility: visible;
+}
+
+/* element-ui 样式调整 */
+.el-select-dropdown__item {
+  padding: 0 20px;
+}
+
+.el-table th {
+  text-align: center;
+  background-color: #f7f9fc;
+}
+.el-table td, .el-pagination {
+  text-align: center;
+}

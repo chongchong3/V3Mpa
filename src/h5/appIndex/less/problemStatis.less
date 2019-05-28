@@ -1,0 +1,111 @@
+body{
+    padding-top:0;
+    padding-left:0;
+    font-size: 12px;
+}
+#problemStatisPageOuter{
+    font-size: 14px;
+    .pro{
+        width:100%;
+        height:40px;
+        display: flex;
+        border-bottom: 1px solid #ccc;
+        &-nav{
+            width:25%;
+            line-height: 40px;
+            text-align: center;
+            font-weight: 500;
+
+        }
+        .navOn{
+            position: relative;
+            color:#1492FF;
+            &:before{
+                position: absolute;
+                content:"";
+                width:30px;
+                height:6px;
+                background:#1492FF;
+                left:calc(50% - 15px);
+                bottom: 2px;
+                border-radius: 3px;
+            }
+        }
+    }
+    .pro-back{
+        background: #fff;
+        margin-bottom: 20px;
+    }
+    .main{
+        //padding:20px 30px 50px 30px;
+        padding:6px 10px;
+        &-time{
+            width:100%;
+            height:25px;
+            display: flex;
+            align-items: center;
+            .timeOuter{
+                width:100px;
+                height:100%;
+                border-radius: 8px;
+                border:1px solid #D9D9D9;
+                margin-right:30px;
+                text-align: center;
+                line-height:25px;
+                position: relative;
+                color:rgba(0,0,0,0.65);
+                font-size: 14px;
+                display: flex;
+                justify-content: space-between;
+                padding:2px 1px;
+                i{
+                    color:rgba(0,0,0,0.25);
+                    position: absolute;
+                    right:10px;
+                }
+
+
+            }
+        }
+        .stars{
+            color:#1492FF;
+        }
+        &-contents{
+            .list{
+                width:100%;
+                height:130px;
+                border-radius: 4px;
+                box-shadow: 0 1px 4px 2px rgba(203, 203, 203, 0.5);
+                margin-top: 20px;
+                padding:20px 10px;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                &-title{
+                    font-weight: 600;
+                }
+                &-common{
+                    display: flex;
+                    flex-wrap: wrap;
+                    font-size: 14px;
+                    color:#999;
+                    &-per{
+                        width:33.333%;
+                        display: flex;
+                        white-space: nowrap;
+                        line-height:22px;
+
+                    }
+                    
+                }
+                
+                &-good{
+                    font-size: 14px;
+                    color:#999;
+                    display: flex;
+                }
+            }
+        }
+    }
+}

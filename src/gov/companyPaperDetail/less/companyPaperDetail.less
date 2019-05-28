@@ -1,0 +1,299 @@
+@import "../../../common/less/base";
+@import "../../../common/less/paperCommon";
+#companyPaperDetailPageOuter{
+  #companyPaperDetailPageCOuter{
+    .bg-com;
+    padding-bottom: 20px;
+    .zIndex{
+      z-index: 2131;
+    }
+    .company-name{
+      height: 50px;
+      width: 100%;
+      line-height: 50px;
+      padding-left: 20px;
+      border-bottom:1px solid #EBEBEB;
+      i{
+        font-size: 24px;
+      }
+      .name{
+        margin-left: 15px;
+        line-height: 24px;
+        color: rgba(69, 84, 103, 1);
+        font-size: 24px;
+        font-family: PingFangSC-Semibold;
+      }
+    }
+    .tab-content{
+      padding:10px 20px 50px;
+      min-height: 640px;
+      .tab-box{
+        padding-bottom: 50px;
+        &-on{
+          display: block;
+        }
+        .flex-content{
+          display: flex;
+          width: 100%;
+        }
+        .flex-content2{
+          width: 100%;
+          display: flex;
+          //align-items: center;
+          min-height:30px;
+          &>div{
+            flex: 1;
+            // line-height: 30px;
+            min-height: 30px;
+            text-align: center;
+            border-right:1px solid rgba(242,244,247,1);
+            background: #fff;
+            align-self: stretch;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            &:last-child{
+              border-right:none;
+              overflow: auto;
+              line-height: normal;
+            }
+          }
+          .edit-some-btns{
+            background: transparent;
+            top: -70px;
+            .cancelEditSomeone{
+              color:black;
+            }
+          }
+        }
+        .btns-appealRecord{
+          visibility: hidden;
+          &>span{
+            visibility: hidden;
+            &.show-true {
+              visibility: hidden;
+            }
+          }
+        }
+        .actualBusiness{
+          .ys-dropdown-outer{
+            .ys-dropdown-btn{
+              position: absolute;
+              top:0;
+              //border:1px solid #ccc;
+            }
+          }
+        }
+        .data-error{//数据异常按钮
+          position: absolute;
+          right: -90px;
+          color: #333;
+          height: 30px;
+          line-height: 30px;
+          display: none;
+          i{
+            font-size: 18px;
+            color:red;
+          }
+        }
+        .edit-someone{
+          border: none;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          position: absolute;
+          width: 60px;
+          top:0;
+          right:-80px;
+          padding:0;
+          height: 24px;
+          .btn-delete{
+            &:hover{
+              color:#FA5741;
+            }
+          }
+          .btn-edit{
+            &:hover{
+              color:#FA5741;
+            }
+          }
+        }
+        .edit-input{
+          flex: 1;
+          border: none;
+          background: #ddd;
+          margin: 0 5px;
+          line-height: 20px;
+          height: 20px;
+        }
+        .appeal-content{
+          width: 630px;
+          height: 50px;
+          margin:50px auto 0;
+          // display: none;
+          textarea{
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: 2px;
+            border:1px solid #d9d9d9;
+            outline: none;
+          }
+        }
+      }
+    }
+    .total-cell{
+      text-align:center;
+      width: 630px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 30px;
+      border: 1px solid #f2f4f7;
+      border-top:none;
+      &>div{
+        height: 30px;
+        line-height: 30px;
+      }
+      .text{
+        flex: 3;
+        border-right: 1px solid #f2f4f7;
+      }
+      .val{
+        flex: 1;
+      }
+      .one{
+        flex:1;
+        border-left: 1px solid #f2f4f7;
+      }
+    }
+    .operate-data{
+      position: relative;
+    }
+    .btns-finally{
+      bottom: 68px;
+      // width: 200px;
+      margin:0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    
+     
+      //display: none;
+      &>div{
+        width: 80px;
+        height: 36px;
+        line-height: 36px;
+        text-align: center;
+        border:1px solid #E3EAF1;
+        border-radius: 2px;
+        cursor: pointer;
+        margin-right: 40px;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+      .left-finally{
+        color: #E3EAF1;
+        background: #fff;
+      }
+      .orange-finally{
+        color:#fff;
+        background: orange;
+      }
+      .right-finally{
+        color:#fff;
+        // background: linear-gradient(to right, #3758E3 , #91AFF9);
+        background: #5E7EED ;
+        border-radius: 4px;
+        &:hover{
+          opacity: 0.8;
+        }
+      }
+    }
+    .imgUrl{
+      padding:12px !important;
+    }
+    .data-cells{
+      background: #f7f9fc;
+    }
+  }
+}
+.el-tabs{
+  .el-tabs__nav.is-top{
+    margin-left:20px;
+  }
+}
+
+.el-row{
+  margin:0 !important;
+  .el-col{
+    padding:0 !important;
+  }
+}
+
+
+.landin,.landout{
+  .el-button{
+    padding:0;
+  }
+}
+.el-dialog__wrapper{
+  .el-dialog__body{
+    .el-form{
+      display: flex;
+      justify-content: space-between;
+      flex-flow: wrap;
+    }
+    .el-form-item{
+      width:45%;
+      display: flex;
+      flex-direction: column;
+      .el-autocomplete,.el-date-editor,.el-select{
+        width:100%;
+      }
+      .el-form-item__label{
+        text-align: left;
+      }
+    }
+  }
+}
+.el-upload-list{
+  .el-upload-list__item{
+    width: 60px !important;
+    height: 60px !important;
+  }
+}
+.el-upload--picture-card{
+  width: 60px;
+  height: 60px;
+  line-height: 66px;
+}
+
+// 自核状态灰显
+.disableStatus{
+  visibility:visible;
+  background: #fda79f !important;
+}
+.disableStatus1{
+  visibility:visible;
+  background: #7bd1c1 !important;
+}
+
+//街镇
+.dataErr{
+  position: absolute;
+  right: -90px;
+  color: #333;
+  height: 30px;
+  line-height: 30px;
+  span{
+    display: inline-block;
+    vertical-align: top;
+  }
+  i{
+    font-size: 18px;
+    color: red;
+     margin-right: 6px;
+  }
+}

@@ -1,0 +1,37 @@
+<template>
+    <BasePage>
+        <section>
+        <!-- <div class="wrapper"> 是列表用这个 -->
+            <!-- HTML内容 -->
+        
+        </section>
+    </BasePage>
+</template>
+
+<script>
+import BasePage from '@/components/BasePage'
+
+import {} from '@api/gov/${NAME}'
+
+export default {
+    data() {
+        return {
+
+        };
+    },
+    created() {
+    },
+
+    methods: {
+
+    },
+    components: {
+        BasePage
+    }
+};
+</script>
+
+<style lang="less" scoped>
+
+
+</style>

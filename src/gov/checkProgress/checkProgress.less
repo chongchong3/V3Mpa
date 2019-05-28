@@ -1,0 +1,174 @@
+
+@import "../../common/less/reset.less";
+@import "../../common/less/paperCommon";
+
+@usualColor: #455467;
+@baseColor: #e2e7ee;
+@bgContentColor: rgba(253, 253, 254, 1);
+@checkColor: #4465e7;
+
+.lineHight35 {
+    line-height: 35px;
+    height: 35px;
+}
+/** 首页*/
+#checkProcessPageOuter {
+    padding: 20px 50px 0;
+    background-color: @bgContentColor;
+    //overflow: auto;
+    .date-select {
+        //height:32px;
+        //border:1px solid rgba(227, 234, 241, 1);
+        width: 100px;
+        float: right;
+
+        .el-input__prefix,
+        .el-input__suffix {
+            top: 2px;
+        }
+        .el-input__inner {
+            height: 35px;
+            line-height: 35px;
+        }
+    }
+    .progress-line {
+        padding-top: 32px;
+        //clear:both;
+        width: 100%;
+        margin: 20px 0 60px;
+        .title {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            position: relative;
+            font-size: 24px;
+            color: @checkColor;
+            .town-name {
+                position: absolute;
+                top: -17px;
+                left: 0;
+                color: @checkColor;
+                font-size: 16px;
+            }
+            .progress-change {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+            .total {
+                color: @baseColor;
+            }
+        }
+        .content {
+            cursor: pointer;
+            width: 100%;
+            height: 16px;
+            background: @baseColor;
+            border-radius: 10px;
+            position: relative;
+            &-on {
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                border-radius: 10px;
+                background: linear-gradient(to right, #91aff9, #3758e3);
+            }
+        }
+    }
+    .town-list {
+        //clear:both;
+        overflow: auto;
+        display: flex;
+        justify-content: flex-start;
+        flex-flow: row wrap;
+        margin: 0 53px;
+        color: @usualColor;
+        font-size: 16px;
+
+        &-li {
+            cursor: pointer;
+            position: relative;
+            width: 140px;
+            height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #ddd;
+            margin: 0 20px 20px 0;
+            border-radius: 2px;
+            &-on {
+                background: linear-gradient(to bottom, #6b9cfd, #4465e7);
+                color: #fff;
+            }
+            .complate-flag {
+                display: none;
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 42px;
+                height: 16px;
+                background: #05d0c7;
+                font-size: 8px !important;
+                border-radius: 0 0 0 10px;
+                text-align: center;
+            }
+        }
+    }
+}
+/** 详情页*/
+#checkProgressDetailPageOuter {
+    min-width: 1108px;
+    .bg-com;
+    .select-items {
+        & > div {
+            border: none;
+            width: 110px;
+        }
+    }
+}
+
+.search-condition {
+    padding: 0 20px;
+    .selectors {
+        white-space: nowrap;
+        & > div {
+            margin-left: 15px;
+            &:first-child {
+                margin-left: 0;
+            }
+            .select {
+                width: 150px;
+
+                .el-input__prefix,
+                .el-input__suffix {
+                    top: 2px;
+                }
+                .el-input__inner {
+                    height: 35px;
+                    line-height: 35px;
+                }
+            }
+        }
+    }
+}
+
+.el-select-dropdown__item {
+    padding: 0 20px;
+}
+.el-table th {
+    text-align: center;
+    background-color: #fafafa;
+}
+.el-table td,
+.el-pagination {
+    text-align: center;
+}
+.el-select {
+    .el-input__inner,
+    .el-input__icon {
+        height: 32px;
+        line-height: 32px;
+    }
+}

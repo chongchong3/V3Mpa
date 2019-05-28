@@ -1,0 +1,199 @@
+@import "../../../common/less/h5Common";
+
+.van-search.van-search--show-action {
+    background: #f7f7f7 !important;
+}
+.van-cell.van-cell--borderless.van-field {
+    background: #fff;
+}
+.van-search__content {
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.1);
+    border-radius: 4px;
+    background-color: #fff;
+}
+.iconfont.icon-rili {
+    font-size: 22px;
+    color: #1492ff;
+}
+
+.picker-box {
+    background-color: #f7f7f7;
+    z-index: 500;
+    margin: .2rem .8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &>div {
+        height: .28rem;
+        line-height: .28rem;
+        color: rgba(16, 29, 55, 1);
+        font-size: 14px;
+        text-align: right;
+        font-family: PingFangSC-Medium;
+        .iconfont {
+            font-size: 10px;
+        }
+    }
+}
+.totalRecord {
+    background-color: #f7f7f7;
+    margin: 0 17px 10px 17px;
+    color: rgba(167, 172, 182, 1);
+    font-size: 13px;
+    font-family: PingFangSC-Semibold;
+}
+
+.problem-item {
+    padding: 10px;
+    margin: 0 17px 10px 17px;
+    width: auto;
+    min-height: 100px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0px 1px 4px 2px rgba(203, 203, 203, 0.5);
+
+    &-top {
+        .company-name {
+            color: rgba(16, 29, 55, 1);
+            font-size: 15px;
+            font-family: PingFangSC-Semibold;
+            margin-right: 10px;
+        }
+        .problem-type-label {
+            padding: .02rem .05rem;
+            background-color: rgba(20, 146, 255, 0.2);
+            color: rgba(20, 146, 255, 1);
+            font-size: 13px;
+            font-family: PingFangSC-Semibold;
+        }
+    }
+    &-main {
+        line-height: 20px;
+        color: rgba(153, 153, 153, 1);
+        font-size: 14px;
+        text-align: left;
+        font-family: PingFangSC-Semibold;
+        margin: .2rem 0;
+        min-height: .2rem;
+    }
+    &-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .createTime {
+            color: rgba(20, 146, 255, 1);
+            font-size: 14px;
+            font-family: PingFangSC-Semibold;
+        }
+        .btns {
+            display: flex;
+            align-items: center;
+            .operateBtn {
+                width: 77px;
+                height: 22px;
+                line-height: 22px;
+                border-radius: 4px;
+                background-color: rgba(20, 146, 255, 1);
+                color: rgba(255, 255, 255, 1);
+                font-size: 14px;
+                text-align: center;
+                font-family: PingFangSC-Semibold;
+                margin-left: 10px;
+
+                &.btn-supervision {
+                    background-color: rgba(255, 160, 7, 1);                    
+                }
+            }
+        }
+    }
+}
+
+.buttonLaunchQuestion {
+    display: flex;
+    justify-content: center;
+    line-height: 40px;
+    width: 125px;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 17px;
+    background-color: #1492ff;
+    color: #fff;
+    font-size: 18px;
+    position: fixed;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    outline: none;
+    border: none;
+    font-family: PingFangSC-Medium;
+    text-align: center;
+    .van-button__text {
+        width: 100%;
+        height: 100%;
+        &:before {
+            content: '+';
+            font-size: 0.55rem;
+            margin-right: 0.05rem;
+            bottom: .05rem;
+            position: relative;
+        }
+    }    
+}
+
+//-----------新增问题------------//
+
+.launchProblemPage {
+    padding: 15px;
+    .van-cell-group {
+         box-shadow: 0 2px 8px 0 hsla(0, 0%, 80%, .5);
+    }
+    .companyNameCell {
+        .van-cell__title {
+            flex: none;
+            width: 90px;
+        }
+        .van-cell__value>div {
+            width: 100%;
+            
+            input {
+                padding: 0;
+                box-shadow: none;
+                border: none;
+                height: 24px;
+                line-height: 24px;
+            }
+        }
+    }
+    .problemContent {
+        flex-direction: column;
+    }
+    #sectionFooter {
+        display: flex;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 49px;
+        //width: 100%;
+        #buttonCancel,
+        #buttonEnsure {
+            flex: 1;
+            outline: none;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        #buttonCancel {
+            color: #131313;
+            background: white;
+        }
+        #buttonEnsure {
+            color: white;
+            background: #1492FF;
+        }
+    }
+}
+
+
+
+
