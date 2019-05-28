@@ -54,7 +54,7 @@
                                             'btn',
                                             'btn-entFile',
                                             {
-                                                'disable-click':
+                                                'disabled-click':
                                                     scope.row.status == 6
                                             },
                                             { setGary: scope.row.status == 2 }
@@ -73,7 +73,7 @@
                                             'btn',
                                             'btn-check',
                                             {
-                                                'disable-click':
+                                                'disabled-click':
                                                     scope.row.status == 1 ||
                                                     scope.row.status == 4
                                             }
@@ -206,7 +206,7 @@ export default {
                 });
             } else {
                 if (row.status == 6) return;
-                let { creditCode, dataYear, entName} = row;
+                let { creditCode, dataYear, entName } = row;
                 gotoGovURL(
                     `companyPaperDetail.html?action=entFile&creditCode=${creditCode}&dataYear=${dataYear}&entName=${entName}`
                 );
@@ -260,7 +260,7 @@ export default {
           }
         }
       }
-      .disable-click{
+      .disabled-click{
         color:rgba(147, 153, 165, .5) !important;
         cursor: not-allowed;
       }

@@ -1,23 +1,26 @@
-const getPageList = require('./config/fileMap');
+const { getCreateConfig } = require('./config/config.file');
 const fileName = require('./config/fileName')[process.env.selfDirName];
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const isProd = process.env.NODE_ENV === 'production'
-console.log(process.memoryUsage());
+
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 function getPages() {
     let obj = {};
-    fileName.forEach(v => {
-        let conf = getPageList(process.env.selfDirName, v);
-        obj[v] = {
-            entry: `${conf.output.js}${v}.js`,
-            template: `${conf.output.html}${v}.html`,
-            filename: isProd ? `${v}.html` : `${process.env.selfDirName}/${v}.html`,// process.env.NODE_ENV === 'production' ?`${v}.html`:`${process.env.selfDirName}/${v}.html`,
+
+    let { html: { filename: template }, js: { filename: entry } } = getCreateConfig(process.env.selfDirName)
+
+    console.log(template, entry)
+    Object.entries(fileName).forEach(([k, v]) => {
+        obj[k] = {
+            entry: entry.replace(/\${filename}/g, k),
+            template: template.replace(/\${filename}/g, k),
+            filename: isProd ? `${k}.html` : `${process.env.selfDirName}/${k}.html`,// process.env.NODE_ENV === 'production' ?`${v}.html`:`${process.env.selfDirName}/${v}.html`,
             title: '',
             favicon: path.join(__dirname, './public/favicon.ico'),
-            chunks: ['chunk-vendors', 'chunk-common', `${v}`]
+            chunks: ['chunk-vendors', 'chunk-common', `${k}`]
         }
     })
     return obj
@@ -57,7 +60,7 @@ module.exports = {
     },
     css: {
         sourceMap: !isProd,
-        loaderOptions:  process.env.selfAdaption ? {
+        loaderOptions: process.env.selfAdaption ? {
             postcss: {
                 plugins: [
                     // px转rem
@@ -71,7 +74,7 @@ module.exports = {
                     })
                 ]
             }
-        }: {}
+        } : {}
     },
 
     configureWebpack: config => {

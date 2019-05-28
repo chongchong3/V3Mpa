@@ -37,21 +37,15 @@
           width: 100%;
         }
         .flex-content2{
-          width: 100%;
           display: flex;
-          //align-items: center;
-          min-height:30px;
+          width: 100%;
           &>div{
             flex: 1;
-            // line-height: 30px;
-            min-height: 30px;
+            line-height: 30px;
+            height: 30px;
             text-align: center;
             border-right:1px solid rgba(242,244,247,1);
             background: #fff;
-            align-self: stretch;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             &:last-child{
               border-right:none;
               overflow: auto;
@@ -112,11 +106,6 @@
               color:#FA5741;
             }
           }
-          .btn-edit{
-            &:hover{
-              color:#FA5741;
-            }
-          }
         }
         .edit-input{
           flex: 1;
@@ -156,15 +145,11 @@
         line-height: 30px;
       }
       .text{
-        flex: 3;
+        flex: 4;
         border-right: 1px solid #f2f4f7;
       }
       .val{
         flex: 1;
-      }
-      .one{
-        flex:1;
-        border-left: 1px solid #f2f4f7;
       }
     }
     .operate-data{
@@ -172,13 +157,11 @@
     }
     .btns-finally{
       bottom: 68px;
-      // width: 200px;
+      width: 200px;
       margin:0 auto;
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-    
-     
       //display: none;
       &>div{
         width: 80px;
@@ -188,10 +171,6 @@
         border:1px solid #E3EAF1;
         border-radius: 2px;
         cursor: pointer;
-        margin-right: 40px;
-        &:last-child {
-          margin-right: 0;
-        }
       }
       .left-finally{
         color: #E3EAF1;
@@ -203,12 +182,7 @@
       }
       .right-finally{
         color:#fff;
-        // background: linear-gradient(to right, #3758E3 , #91AFF9);
-        background: #5E7EED ;
-        border-radius: 4px;
-        &:hover{
-          opacity: 0.8;
-        }
+        background: linear-gradient(to right, #3758E3 , #91AFF9);
       }
     }
     .imgUrl{

@@ -8,17 +8,7 @@
             <span>咨询部门</span>
           </div>
           <div class="itempaper-table">
-              <el-table
-              :data="department.list"
-              stripe
-              style="width: 100%" align="center" >
-              <el-table-column   v-for="(item,index) in land.departmentList" :key="index+'q'"
-                :prop="item.key" align="center" 
-                :label="item.name"
-              >
-              </el-table-column>
-            </el-table>
-            <!-- <el-row
+            <el-row
               :gutter="20"
               class="data-cells"
               v-for="(item,i) in land.departmentList"
@@ -30,7 +20,7 @@
               <el-col :span="14" class="data-cells-detail">
                 <div>{{department[item.key]}}</div>
               </el-col>
-            </el-row> -->
+            </el-row>
           </div>
         </div>
         <div class="total-item itempaper">
@@ -56,8 +46,8 @@
               <el-col :span="4" class="data-cells-detail">
                 <div>{{totalList[item.key]}}</div>
               </el-col>
-               <el-col :span="4" class="data-cells-detail appeal_reason">
-                 <div>{{rejectUpdateList[item.key]}}</div>
+               <el-col :span="4" class="data-cells-detail">
+                 <div>{{obj1[item.key]}}</div>
               </el-col>
               <div class="buttons" v-show="action=='check'&&param.status!=='6'" ref="sureApeal">
                 <button class="sendIdea" @click="sendIdeas($event,item.key)">发起申诉</button>
@@ -68,7 +58,7 @@
                 <button class="sendIdea" @click="sendIdeas($event,item.key)" :class="fileArr.includes(item.key)==true?'disableStatus':''">{{fileArr.includes(item.key)==true?'已申诉':'发起申诉'}}</button>
                 <button class="sureIdea" @click="sendIdeas($event,item.key)" :class="fileArr.includes(item.key)==false?'disableStatus1':''">{{fileArr.includes(item.key)!==true?'已确认':'确认无误'}}</button>
               </div>
-               <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr&&param.userType=='3'">
+               <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr">
                  <!-- <span>{{item.key}}</span> -->
                 <div v-if="fileArr.includes(item.key)">
                   <button
@@ -86,7 +76,16 @@
               </div>
             </el-row>
           </div>
-          </div>
+               
+            </div>
+            <div class="appeal-content">
+                <textarea
+                    name=""
+                    cols="30"
+                    rows="5"
+                    placeholder="请输入申诉内容和理由"
+                ></textarea>
+            </div>
         </div>
       </div>
       <div class="appeal-content" v-show="textReason">
@@ -114,8 +113,7 @@
   </div>
 </template>
 <script>
-// import * as api from "@api/gov/companyPaperDetail";
-import {updateOrAddStaticsData,getTotalData} from "@api/gov/companyPaperDetail";
+import * as api from "@api/gov/companyPaperDetail";
 import { landData } from "@/common/constant/constant";
 export default {
   data() {
@@ -125,7 +123,7 @@ export default {
       backReas:"",
       dialogBack: false,
       fileArr:[],
-     //  obj1: {}, //驳回成功后，返回的驳回备注
+       obj1: {}, //驳回成功后，返回的驳回备注
       isApeal: "", //驳回成功后，‘驳回’，‘修改’按钮回显状态控制
       action: this.$store.state.paperParam.action,
       files: new Set(),
@@ -157,15 +155,15 @@ export default {
       type: Object,
       default: null
     },
-    rejectUpdateList: {
-      type: Object,
-      default:null
+        rejectUpdateList: {
+      type: Array,
+      default: []
     }
   },
     watch: {
-      field(val) {
-        this.partmentApeal(val);
-      }
+    field(val) {
+      this.partmentApeal(val);
+    }
   },
   computed: {},
   mounted() {
@@ -194,15 +192,13 @@ export default {
       } else if (this.title == "修改") {
         let obj = {
           dataYear: this.param.dataYear,
-          creditCode: this.param.creditCode,
-          entName:this.param.entName
+          creditCode: this.param.creditCode
         };
         let before = this.totalList[this.backField];
-        // let list = JSON.parse(JSON.stringify(this.totalList));
-        let list=this.totalList
-        list[this.backField] = Number(this.backReas);
+        let list = JSON.parse(JSON.stringify(this.totalList));
+        list[this.backField] = this.backReas;
         let arr = Object.assign({}, list, obj);
-        updateOrAddStaticsData(arr).then((res)=>{
+        api.updateOrAddStaticsData(arr).then((res)=>{
         })
         this.$emit(
           "reviseText",
@@ -231,18 +227,13 @@ export default {
       } else {
         // this.fileArr = [];
       }
-      if(arr.content !== undefined && arr.content !== null && arr.content!==''){
-        this.textReason=true
-        this.appealReason=arr.content
-      }
+      // console.log(this.fileArr)
       //驳回备注信息
-      // this.rejectUpdateList.map((v, i) => {
-      //   this.obj1[v.field] = v.content;
-      //   this.dialogBack = false;
-      //   this.backReas = "";
-      // });
-      this.dialogBack = false;
-      this.backReas = "";
+      this.rejectUpdateList.map((v, i) => {
+        this.obj1[v.field] = v.content;
+        this.dialogBack = false;
+        this.backReas = "";
+      });
       //驳回成功后按钮灰显
       if (this.isApeal !== "") {
         if (this.title == "驳回原因") {
@@ -256,9 +247,7 @@ export default {
     },
     sendIdeas(e, key = "") {
       if (e.target.innerHTML == "发起申诉") {
-         if(key!==''){
-              this.files.add(key);
-          }
+        this.files.add(key);
         e.target.innerHTML = "已申诉";
         e.target.nextSibling.innerHTML = "确认无误";
         e.target.style.background = "#FDA79F";
@@ -308,7 +297,7 @@ export default {
         creditCode: this.param.creditCode,
         dataYear: this.param.dataYear
       };
-      getTotalData(params).then(res => {
+      api.getTotalData(params).then(res => {
         if (res.code == "0000") {
           this.totalList = Object.assign({}, this.totalList, res.data);
           this.partmentApeal(this.field)

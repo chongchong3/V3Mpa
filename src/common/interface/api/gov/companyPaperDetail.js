@@ -60,9 +60,6 @@ export const getListElecticEntName = (params) => {
 export const showComplain = (params) => {
     return axios.get('/gov/selfCheck/showComplain', params)
 }
-export const refillIn = (params) => {
-    return axios.get('/gov/selfCheck/refillIn', params)
-}
 
 export const getConfirm = (params) => {
     return axios.postForm('/gov/import/confirm', params)
@@ -77,10 +74,13 @@ export const updateRentLand = (params) => {
         emulateJSON: false
     })
 }
-export const insertLandImg = (params)=>{
-    return axios.postForm('/gov/selfCheck/insertLandImg', params)
+export const insertLandImg = (params) => {
+    return axios.request({
+        url: '/gov/selfCheck/insertLandImg',
+        params,
+        emulateJSON: false
+    })
 }
-
 export const updateOrAddTaxData = (params) => {
     return axios.request({
         url: '/gov/selfCheck/updateOrAddTaxData',

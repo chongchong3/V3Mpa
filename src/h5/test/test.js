@@ -6,8 +6,8 @@ import Vant from 'vant'
 import 'vant/lib/index.css'
 import '@less/reset.less'
 
-${config.router ? "import router from './router'" : ""}
-${config.store ? "import store from '../../store'" : ""}
+
+import store from '../../store'
 
 // 300ms延迟
 fastClick.attach(document.body);
@@ -15,7 +15,7 @@ Vue.use(Vant);
 
 Vue.config.productionTip = false
 new Vue({
-    ${config.router ? "router," : ""}
-    ${config.store ? "store," : ""}
+    
+    store,
     render: h => h(App)
 }).$mount('#app')

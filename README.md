@@ -1,10 +1,60 @@
 # 数字经信前端
 
+
+
+
 ## 项目说明
 
 | 项目名称 | 描述 |
 | -------- | -------- |
 | szjx-front | 数字经信前端 |
+
+# 环境
+* git [gitbash下载地址][1] 
+```shell
+
+```
+* nvm ---> 管理npm&node [nvm下载地址 下载nvm-setup.zip][2]
+* npm 5.6.0
+* node 8.11.1
+```shell
+# 下载慢的话可以更改镜像(找不到npm指令也是)
+node_mirror: https://npm.taobao.org/mirrors/node/
+npm_mirror: https://npm.taobao.org/mirrors/npm/
+
+nvm install 8.11.1
+
+nvm use 8.11.1
+
+npm i cnpm -g
+```
+# 安装
+
+```shell
+git clone http://10.1.1.11/web/szjx-front.git
+
+cd ./szjx-front
+
+cnpm i
+
+# [env]就是你所需启动的环境
+npm run [env]Dev
+```
+
+# 创建文件
+先是在 `./config/fileName.js`配置正确文件配置指令
+```
+node ./config/create/create.js h5[dev|gov]
+
+# 或者直接执行
+node ./config/create/createGov.js
+```
+
+# 问题
+找不到指令。去看一下环境变量的path
+
+有没有指向正确的目录
+
 
 # 目录说明
 ```
@@ -87,6 +137,16 @@ less除了多个页面共同使用一个less的样式否则不要单独建立文
 # 路由
 使用`const router = () => import('./test.vue')`，webpack会单独拆出一个js文件
 
+# 代理
+在`vue.config.js`直接配置
+```js
+ '/user': {
+    target: 'http://localhost:8080',
+    // pathRewrite: { '^/user' : '' },
+    changeOrigin: true,
+ },
+```
+
 # 测试
 暂无
 
@@ -134,3 +194,5 @@ module.exports = {
 按前端模块分，有点麻烦
 
 
+  [1]: https://git-scm.com/downloads
+  [2]: https://github.com/coreybutler/nvm-windows/releases

@@ -11,17 +11,7 @@
             </span>
           </div>
           <div class="itempaper-table">
-            <el-table
-              :data="department.list"
-              stripe
-              style="width: 100%" align="center" >
-              <el-table-column   v-for="(item,index) in land.departmentList" :key="index+'q'"
-                :prop="item.key" align="center" 
-                :label="item.name"
-              >
-              </el-table-column>
-            </el-table>
-            <!-- <el-row
+            <el-row
               :gutter="20"
               class="data-cells"
               v-for="(item,i) in land.departmentList"
@@ -31,9 +21,9 @@
                 <div>{{item.name}}</div>
               </el-col>
               <el-col :span="14" class="data-cells-detail">
-                <div>{{department.list[item.key]}}</div>
+                <div>{{department[item.key]}}</div>
               </el-col>
-            </el-row> -->
+            </el-row>
           </div>
         </div>
         <div class="total itempaper">
@@ -89,7 +79,6 @@
                       <el-upload
                         action="/gov/selfCheck/uploadFile"
                         list-type="picture-card"
-                        :disabled="action=='entFile'?false:true"
                         :on-preview="handlePictureCardPreview"
                         :on-success="(res)=>{return upload(res,index,'log')}"
                         :file-list=" item[val.key] | getFileList"
@@ -101,19 +90,10 @@
                         <img width="100%" :src="dialogImageUrl" alt>
                       </el-dialog>
                     </el-col>
-                    <el-col
-                      :span="7"
-                      class="data-cells-detail appeal_reason"
-                      :key="val.key+'r'"
-                      v-if="rejectArr[index]"
-                    >
+                    <el-col :span="7" class="data-cells-detail" :key="val.key+'r'"  v-if="rejectArr[index]">
                       <div>{{rejectArr[index][val.key]}}</div>
                     </el-col>
-                    <div
-                      class="buttons"
-                      v-show="action=='check'&&param.status!=='6'&&val.key!=='imgUrl'"
-                      ref="sureApeal"
-                    >
+                    <div class="buttons" v-show="action=='check'&&param.status!=='6'&&val.key!=='imgUrl'" ref="sureApeal" v-if="fileArr[index]">
                       <button
                         class="sendIdea"
                         :data-key="val.key"
@@ -125,25 +105,14 @@
                         @click="sendIdeas($event,val.key,item.id,index)"
                       >确认无误</button>
                     </div>
-                    <div
-                      class="buttons"
-                      v-show="action=='check'&&param.status=='6'&&val.key!=='imgUrl'"
-                      v-if="fileArr[index]"
-                    >
-                      <button
-                        class="sendIdea"
-                        @click="sendIdeas($event,val.key,item.id,index)"
-                        :class="fileArr[index].includes(val.key)==true?'disableStatus':''"
-                      >{{fileArr[index].includes(val.key)==true?'已申诉':'发起申诉'}}</button>
-                      <button
-                        class="sureIdea"
-                        @click="sendIdeas($event,val.key,item.id,index)"
-                        :class="fileArr[index].includes(val.key)==false?'disableStatus1':''"
-                      >{{fileArr[index].includes(val.key)!==true?'已确认':'确认无误'}}</button>
+                    <!-- <div>{{fileArr[index]}}</div> -->
+                    <div class="buttons" v-show="action=='check'&&param.status=='6'&&val.key!=='imgUrl'" v-if="fileArr[index]">
+                      <button class="sendIdea" @click="sendIdeas($event,val.key,item.id,index)" :class="fileArr[index].includes(val.key)==true?'disableStatus':''">{{fileArr[index].includes(val.key)==true?'已申诉':'发起申诉'}}</button>
+                      <button class="sureIdea" @click="sendIdeas($event,val.key,item.id,index)" :class="fileArr[index].includes(val.key)==false?'disableStatus1':''">{{fileArr[index].includes(val.key)!==true?'已确认':'确认无误'}}</button>
                     </div>
                     <div
                       class="buttons appeal"
-                      v-show="action=='appealRecord'&&val.key!=='imgUrl'"
+                      v-show="action=='appealRecord'"
                       v-if="fileArr[index]"
                     >
                       <div v-if="fileArr[index].includes(val.key)">
@@ -151,10 +120,7 @@
                           class="sendIdea"
                           @click="backReason(val.key,item.id,$event,'驳回原因',index)"
                         >驳回</button>
-                        <button
-                          class="sureIdea"
-                          @click="backReason(val.key,item.id,$event,'修改',index)"
-                        >修改</button>
+                        <button class="sureIdea" @click="backReason(val.key,item.id,$event,'修改',index)">修改</button>
                       </div>
                       <div v-if="!fileArr[index].includes(val.key)">
                         <i class="iconfont icon-dagoux"></i>核实无误
@@ -196,13 +162,12 @@
                       :key="val.key+'o'"
                       v-if="val.key != 'imgUrl'"
                     >
-                      <div>{{v[val.key]}}</div>
+                    <div>{{v[val.key]}}</div>
                     </el-col>
                     <el-col :span="14" class="data-cells-detail imgUrl" :key="val.key+'p'" v-else>
                       <el-upload
                         action="/gov/selfCheck/uploadFile"
                         list-type="picture-card"
-                        :disabled="action=='entFile'?false:true"
                         :on-preview="handlePictureCardPreview"
                         :on-success="(res)=>{return upload(res,i,'landIn')}"
                         :file-list=" v[val.key] | getFileList"
@@ -214,15 +179,9 @@
                         <img width="100%" :src="dialogImageUrl" alt>
                       </el-dialog>
                     </el-col>
-                    <div
-                      class="dataErr"
-                      :title="v.erroList?v.content:''"
-                      v-show="v.erroList?v.erroList.includes(val.key):false"
-                    >
-                      <i class="iconfont icon-weiwancheng"></i>
-                      <span>数据异常</span>
-                    </div>
+                    <div class="dataErr" :title ="v.erroList?v.content:''" v-show="v.erroList?v.erroList.includes(val.key):false"><i class="iconfont icon-weiwancheng"></i><span>数据异常</span></div>
                   </el-row>
+                 
                 </div>
               </div>
               <div
@@ -238,6 +197,7 @@
                   </div>
                 </div>
                 <div class="btn btn-delete" @click="delRend(i,v.id)" v-show="action=='entFile'">
+                  >
                   <i class="iconfont icon-shanchu"></i>
                   <div class="tip">
                     删除
@@ -287,7 +247,6 @@
                       <el-upload
                         action="/gov/selfCheck/uploadFile"
                         list-type="picture-card"
-                        :disabled="action=='entFile'?false:true"
                         :on-preview="handlePictureCardPreview"
                         :on-success="(res)=>{return upload(res,i,'landOut')}"
                         :file-list=" v[val.key] | getFileList"
@@ -299,14 +258,7 @@
                         <img width="100%" :src="dialogImageUrl" alt>
                       </el-dialog>
                     </el-col>
-                    <div
-                      class="dataErr"
-                      :title="v.erroList?v.content:''"
-                      v-show="v.erroList?v.erroList.includes(val.key):false"
-                    >
-                      <i class="iconfont icon-weiwancheng"></i>
-                      <span>数据异常</span>
-                    </div>
+                    <div class="dataErr" :title ="v.erroList?v.content:''" v-show="v.erroList?v.erroList.includes(val.key):false"><i class="iconfont icon-weiwancheng"></i><span>数据异常</span></div>
                   </el-row>
                 </div>
               </div>
@@ -336,41 +288,16 @@
             <i class="iconfont icon-jia"></i>添加
           </el-button>
         </div>
-        <div class="otherLand itempaper">
+        <div class="otherLand">
+          <div class="operate-item itempaper">
             <div class="itempaper-title">
               <span class="splot"></span>
               <span>其他土地</span>
             </div>
-           <div class="itempaper-table">
-              <el-row
-                :gutter="20"
-                class="data-cells"
-                v-for="(val,i) in land.otherList"
-                :key="i+'g'"
-                :index="i"
-              >
-                <el-col :span="20" class="data-cells-title">
-                  <div>{{val.name}}</div>
-                </el-col>
-                <el-col
-                  :span="18"
-                  class="data-cells-detail"
-                  :key="i+'j'"
-                >
-                  <div>{{landList.otherLand[val.key]}}</div>
-                </el-col>
-              </el-row>
-                <div  class="edit-data edit-someone editRendOutBtn"  v-show="action=='entFile'">
-                <div class="btn btn-edit" @click="editOtherLand">
-                  <i class="iconfont icon-xiugai"></i>
-                  <div class="tip">
-                    编辑
-                    <span class="triangle-down"></span>
-                  </div>
-                </div>
-              </div>
+            <div class="itempaper-table">
+              <div style="width: 100%;" class="other-content"></div>
+            </div>
           </div>
-         
         </div>
         <div class="contract-item itempaper">
           <div class="itempaper-title">
@@ -387,7 +314,6 @@
                   <el-upload
                     action="/gov/selfCheck/uploadFile"
                     list-type="picture-card"
-                    :disabled="action=='entFile'?false:true"
                     :on-preview="handlePictureCardPreview"
                     :on-success="(res)=>{return upload(res,0,'contract')}"
                     :file-list=" this.landList.releateImg | getFileList"
@@ -419,7 +345,7 @@
       <el-tabs v-model="activeName" type="card" @tab-click="tabClick">
         <el-tab-pane label="企业" name="first">
           <el-form :model="rentInForm[0]">
-            <el-form-item v-for="(item,i) in land.rendInList" :label="item.key!='imgUrl'?item.name:''" :key="i">
+            <el-form-item v-for="(item,i) in land.rendInList" :label="item.name" :key="i">
               <el-autocomplete
                 v-if="item.key == 'lessorCreditCode'"
                 v-model="rentInForm[0].lessorCreditCode"
@@ -450,9 +376,8 @@
                 :picker-options="options.pickerOptionsInEnd0"
                 :placeholder="'请选择'+item.name"
               ></el-date-picker>
-              <!-- <el-input> -->
               <el-input
-                v-else-if="item.key!='imgUrl'"
+                v-else
                 v-model="rentInForm[0][item.key]"
                 autocomplete="off"
                 :placeholder="'请输入'+item.name"
@@ -462,7 +387,7 @@
         </el-tab-pane>
         <el-tab-pane label="个人" name="second">
           <el-form :model="rentInForm[1]">
-            <el-form-item v-for="(item,i) in land.rendInListPerson" :label="item.key!='imgUrl'?item.name:''" :key="i">
+            <el-form-item v-for="(item,i) in land.rendInListPerson" :label="item.name" :key="i">
               <el-date-picker
                 v-if="item.key == 'rentBegin'"
                 v-model="rentInForm[1].rentBegin"
@@ -481,7 +406,7 @@
               ></el-date-picker>
               <el-input
                 v-model="rentInForm[1][item.key]"
-                v-else-if="item.key!='imgUrl'"
+                v-else
                 autocomplete="off"
                 :placeholder="'请输入'+item.name"
               ></el-input>
@@ -497,7 +422,7 @@
     </el-dialog>
     <el-dialog title="新增出租土地" :visible.sync="dialogOutVisible">
       <el-form :model="rentOutForm">
-        <el-form-item v-for="(item,i) in land.rendOutList" :label="item.key!='imgUrl'?item.name:''" :key="i">
+        <el-form-item v-for="(item,i) in land.rendOutList" :label="item.name" :key="i">
           <el-autocomplete
             v-if="item.key == 'lesseeCreditCode'"
             v-model="rentOutForm.lesseeCreditCode"
@@ -542,7 +467,7 @@
             ></el-option>
           </el-select>
           <el-input
-            v-else-if="item.key!='imgUrl'"
+            v-else
             v-model="rentOutForm[item.key]"
             autocomplete="off"
             :placeholder="'请输入'+item.name"
@@ -552,21 +477,6 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogOutVisible = false">取 消</el-button>
         <el-button type="primary" @click="addRentOut">确 定</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog title="编辑其他土地" :visible.sync="dialogOtherVisible">
-      <el-form :model="landList.othe">
-        <el-form-item v-for="(item,i) in  land.otherList" :label="item.name" :key="i">
-          <el-input
-            v-model="landList.otherLand[item.key]"
-            autocomplete="off"
-            :placeholder="'请输入'+item.name"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogOtherVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogOtherVisible = false">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog :title="title" :visible.sync="dialogBack">
@@ -584,10 +494,8 @@
   </div>
 </template>
 <script>
-// import * as api from "@api/gov/companyPaperDetail";
-import {updateInputLandData,getLandData,showErro,getListCodeEntName,deleteRentInLand,deleteRentOutLand} from "@api/gov/companyPaperDetail";
+import * as api from "@api/gov/companyPaperDetail";
 import { landData } from "@/common/constant/constant";
-import { constants } from 'crypto';
 export default {
   data() {
     return {
@@ -596,20 +504,19 @@ export default {
       backReas: "", //当前驳回的理由
       dialogBack: false,
       fileArr: [], //审核状态数据
-      rejectArr: [], //驳回理由字段
+      rejectArr:[], //驳回理由字段
       isApeal: "", //驳回成功后，‘驳回’，‘修改’按钮回显状态控制
       backId: "",
       apealFiles: "",
-      clickIndex: "", //存储点击登记土地的下标，然后去获取它的before的值
+      clickIndex:"",//存储点击登记土地的下标，然后去获取它的before的值
       action: this.$store.state.paperParam.action,
       files: new Set(), //自核状态下，把所有‘已自核’的字段添加到改属性传给后台
       textReason: false, //控制文本的显示
-      erroList: [], //街镇--土地数据异常数据
+      erroList:[],//街镇--土地数据异常数据
       appealReason: "",
       land: {
         departmentList: landData.departmentList,
         logLandList: landData.logLandList,
-        otherList: landData.otherList,
         rendOutList: landData.rendOutList,
         rendInList: landData.rendInList,
         rendInListPerson: landData.rendInListPerson
@@ -621,7 +528,6 @@ export default {
       realPropertyNumberList: [],
       dialogInVisible: false,
       dialogOutVisible: false,
-      dialogOtherVisible:false,
       rentInForm: [
         {
           lessorCreditCode: "",
@@ -733,25 +639,27 @@ export default {
         }
       },
       editIndex: "",
-      param: this.$store.state.paperParam
+      param:this.$store.state.paperParam
+
     };
   },
   watch: {
     field(val) {
       this.partmentApeal(val);
-    },
-    department(val){ }
- 
+    }
   },
   props: {
     department: {
-      type: Object
+      type: Object,
+      default: null
     },
     field: {
-      type: Object
+      type: Object,
+      default: null
     },
     rejectUpdateList: {
-      type: Array
+      type: Array,
+      default: []
     }
   },
   computed: {
@@ -760,7 +668,11 @@ export default {
       for (let i = 0, len = this.landList.rentInLandList.length; i < len; i++) {
         totalWater += Number(this.landList.rentInLandList[i].waterTotal);
       }
-      for (let i = 0, len = this.landList.rentOutLandList.length;i < len;i++ ) {
+      for (
+        let i = 0, len = this.landList.rentOutLandList.length;
+        i < len;
+        i++
+      ) {
         totalWater -= Number(this.landList.rentOutLandList[i].waterTotal);
       }
       this.$store.commit("setTotalWater", totalWater);
@@ -783,13 +695,13 @@ export default {
   },
   methods: {
     //驳回原因
-    backReason(backField, backId, event, title, index) {
+    backReason(backField, backId, event, title,index) {
       this.title = title;
       this.isApeal = event.target;
       this.dialogBack = true;
       this.backField = backField;
       this.backId = backId;
-      this.clickIndex = index;
+      this.clickIndex=index
     },
     //确定驳回
     sureBack() {
@@ -804,18 +716,15 @@ export default {
           })
         );
       } else if (this.title == "修改") {
-        let before = this.landList.landDataList[this.clickIndex][
-          this.backField
-        ];
-        this.landList.landDataList[this.clickIndex][this.backField]=this.backReas
-        let arr = this.landList.landDataList.map((v, i) => {
-          let data = Object.assign({}, v, {
-            entName: this.param.entName,
-            creditCode: this.param.creditCode
-          });
-          return data;
-        });
-        updateInputLandData({dataList:arr}).then(res => {});
+        let before = this.landList.landDataList[this.clickIndex][this.backField];
+        let arr = this.landList.landDataList.map((v,i)=>{
+            let data = Object.assign({},v,{
+                entName:this.param.entName,
+                creditCode:this.param.creditCode
+            });
+            return data;
+        })
+        api.updateInputLandData(arr).then(res => {});
         this.$emit(
           "reviseText",
           JSON.stringify({
@@ -829,25 +738,25 @@ export default {
     },
     //部门审核显示
     partmentApeal(arr) {
-      this.files = new Set();
-      if (arr.field !== undefined && arr.field !== "") {
+      this.files=new Set()
+      // console.log(arr.field)
+      if (arr.field!==undefined&&arr.field!=='') {
         this.landList.landDataList.map((v, i) => {
+           let landOccurArr=[]
           JSON.parse(arr.field).map((val, i) => {
-            for (let j in val) {
-              let landOccurArr = [];
-              if (JSON.stringify(v.id) == j) {
-                landOccurArr= val[j].split(",");
-                this.fileArr.push(landOccurArr);
-              }
+            let landId=val.split('-')[1]
+            if(!landId ){
+              b=[]
+            }else{
+              landOccurArr.push(val.split('-')[0])
             }
-            this.files.add(val);
+            this.files.add(val)
           });
+           this.fileArr.push(landOccurArr);
+           return this.fileArr
         });
       } else {
-      }
-      if(arr.content !== undefined && arr.content !== null && arr.content!==''){
-        this.textReason=true
-        this.appealReason=arr.content
+        // this.fileArr = false;
       }
       // if (arr.field!==undefined&&arr.field!=='') {
       //   this.landList.landDataList.map((v, i) => {
@@ -870,9 +779,10 @@ export default {
       // } else {
       //   // this.fileArr = false;
       // }
-
+      console.log(this.fileArr,'k')
+      console.log(this.files)
       //驳回备注信息
-      this.rejectArr = [];
+      this.rejectArr=[]
       this.landList.landDataList.map((v, i) => {
         let obj = {};
         this.rejectUpdateList.map((value, j) => {
@@ -880,11 +790,11 @@ export default {
             obj[value.field] = value.content;
           }
         });
-        this.rejectArr.push(obj);
+        this.rejectArr.push(obj) 
         this.dialogBack = false;
         this.backReas = "";
       });
-      //驳回成功后按钮灰显
+         //驳回成功后按钮灰显
       if (this.isApeal !== "") {
         if (this.title == "驳回原因") {
           this.isApeal.classList.add("disabled-click");
@@ -897,22 +807,25 @@ export default {
     },
     sendIdeas(e, key = "", id, index) {
       if (e.target.innerHTML == "发起申诉") {
-        if (key !== "") {
-          let key1 = `${key}-${id}`;
-          this.files.add(key1);
-        }
+        let key1=`${key}-${id}`
+        console.log(key1)
+        this.files.add(key1)
+        // this.files.push({
+        //   [key]:{'key':key,'id':id}
+        // });
         e.target.innerHTML = "已申诉";
-        e.target.nextSibling.classList.remove("disableStatus1");
+        // e.target.classList.add("appeal-btn-on");
+        e.target.nextSibling.classList.remove('disableStatus1')
         e.target.nextSibling.innerHTML = "确认无误";
         e.target.style.background = "#FDA79F";
         e.target.nextSibling.style.background = "#5C7CEC";
         this.commitApeal(id);
       } else if (e.target.innerHTML == "确认无误") {
-        let key1 = `${key}-${id}`;
-        this.files.delete(key1);
+          let key1=`${key}-${id}`
+        this.files.delete(key1)
         e.target.innerHTML = "已确认";
         e.target.previousSibling.innerHTML = "发起申诉";
-        e.target.previousSibling.classList.remove("disableStatus");
+         e.target.previousSibling.classList.remove('disableStatus')
         // e.target.previousSibling.classList.remove("appeal-btn-on");
         e.target.style.background = "#7BD1C1";
         e.target.previousSibling.style.background = "#FE6E61";
@@ -962,91 +875,67 @@ export default {
       this.editIndex = "";
       this.reset("rentOut");
     },
-    editOtherLand(){
-      this.dialogOtherVisible=true
-    },
     getDataList() {
       this.param = this.$store.state.paperParam;
       const params = {
         creditCode: this.param.creditCode,
         dataYear: this.param.dataYear
       };
-      getLandData(params)
-        .then(res => {
-          if (res.code == "0000") {
-            let datas = res.data;
-            if (!datas.otherLand) {
-              datas.otherLand = {
-                id: null,
-                landType: null,
-                otherLand: null,
-                landLocated: null,
-                remark: null
-              };
-            }
-            this.landList = Object.assign({}, this.landList, datas);
-            this.partmentApeal(this.field);
-            this.realPropertyNumberList =
-              this.landList.landDataList.map((v, i) => {
-                return v.realPropertyNumber;
-              }) || [];
-            this.submitStore();
-          }else{
-            this.$message.error(res.msg);
+      api.getLandData(params).then(res => {
+        if (res.code == "0000") {
+          let datas = res.data;
+          if (!datas.otherLand) {
+            datas.otherLand = {
+              id: null,
+              landType: null,
+              otherLand: null,
+              landLocated: null,
+              remark: null
+            };
           }
-        })
-        .then(() => {
-          if (this.action == "townCheck") {
-            //乡镇审核 显示异常
-            showErro({
-                creditCode: this.param.creditCode,
-                dataYear: this.param.dataYear
+          this.landList = Object.assign({}, this.landList, datas);
+          this.partmentApeal(this.field);
+          this.realPropertyNumberList =
+            this.landList.landDataList.map((v, i) => {
+              return v.realPropertyNumber;
+            }) || [];
+          this.submitStore();
+        }
+      }).then(()=>{
+        if (this.action == "townCheck") {
+        //乡镇审核 显示异常
+        api
+          .showErro({
+            creditCode: this.param.creditCode,
+            dataYear: this.param.dataYear
+          })
+          .then(d => {
+            if (d.code == "0000") {
+              this.erroList = d.data || [];
+              this.landList.rentInLandList.map((v,i)=>{
+                this.erroList.map((value,j)=>{
+                    if(value.creditCode){
+                      if(v.lessorCreditCode==value.creditCode&&value.type=='rentInLand'){
+                        this.$set(v,'content',value.content)
+                        this.$set(v,'erroList',value.erroList)
+                       }
+                    }
+                })
               })
-              .then(d => {
-                if (d.code == "0000") {
-                  this.erroList = d.data || [];
-                  this.landList.rentInLandList.map((v, i) => {
-                    this.erroList.map((value, j) => {
-                      if (value.creditCode) {
-                        if (
-                          v.lessorCreditCode == value.creditCode &&
-                          value.type == "rentInLand"
-                        ) {
-                          this.$set(v, "content", value.content);
-                          this.$set(v, "erroList", value.erroList);
-                        }
-                      }
-                    });
-                  });
-                  this.landList.rentOutLandList.map((v, i) => {
-                    this.erroList.map((value, j) => {
-                      if (value.creditCode) {
-                        if (
-                          v.lesseeCreditCode == value.creditCode &&
-                          value.type == "rentOutLand"
-                        ) {
-                          this.$set(v, "content", value.content);
-                          this.$set(v, "erroList", value.erroList);
-                        }
-                      }
-                    });
-                  });
-                }else{
-                  this.$message.error(d.msg);
+               this.landList.rentOutLandList.map((v,i)=>{
+                this.erroList.map((value,j)=>{
+                    if(value.creditCode){
+                      if(v.lesseeCreditCode==value.creditCode&&value.type=='rentOutLand'){
+                        this.$set(v,'content',value.content)
+                        this.$set(v,'erroList',value.erroList)
+                       }
+                    }
+                })
+              })
                 }
               });
           }
-        }).then(()=>{
-           this.$nextTick(()=>{
-             if(this.action!=='entFile'){
-               let uploadElement=document.getElementsByClassName('el-upload--picture-card')
-                Array.from(uploadElement).map((v,i)=>{
-                  v.style.display="none"
-                })
-             }
-            
-            })
-        });
+      });
     },
     //新增出租
     lesseeCreditCodeSelect(item) {
@@ -1058,7 +947,7 @@ export default {
         size: 10,
         creditCode: queryString
       };
-      getListCodeEntName(params).then(res => {
+      api.getListCodeEntName(params).then(res => {
         if (res.code == "0000") {
           let results = res.data || [];
           results = results.map(v => {
@@ -1072,8 +961,6 @@ export default {
           this.timeout = setTimeout(() => {
             cb(results);
           }, 1000);
-        }else{
-          this.$message.error(d.msg);
         }
       });
     },
@@ -1086,7 +973,7 @@ export default {
         size: 10,
         entName: queryString
       };
-      getListCodeEntName(params).then(res => {
+      api.getListCodeEntName(params).then(res => {
         if (res.code == "0000") {
           let results = res.data || [];
           results = results.map(v => {
@@ -1100,8 +987,6 @@ export default {
           this.timeout = setTimeout(() => {
             cb(results);
           }, 1000);
-        }else{
-          this.$message.error(res.msg)
         }
       });
     },
@@ -1262,9 +1147,7 @@ export default {
           this.landList.releateImg = arr.join(",");
         }
         this.submitStore();
-      }else{
-          this.$message.error(res.msg)
-        }
+      }
     },
     //编辑承租土地
     editRend(v, i) {
@@ -1281,7 +1164,7 @@ export default {
     //删除承租土地
     delRend(i, ID) {
       if (ID !== undefined) {
-        deleteRentInLand({ id: ID }).then(res => {});
+        api.deleteRentInLand({ id: ID }).then(res => {});
       }
       this.landList.rentInLandList.splice(i, 1);
       this.submitStore();
@@ -1295,7 +1178,7 @@ export default {
     //删除出租土地
     delRendOut(i, ID) {
       if (ID !== undefined) {
-        deleteRentOutLand({ id: ID }).then(res => {});
+        api.deleteRentOutLand({ id: ID }).then(res => {});
       }
       this.landList.rentOutLandList.splice(i, 1);
       this.submitStore();
@@ -1303,7 +1186,5 @@ export default {
   }
 };
 </script>
-<style lang="less">
-
-
+<style lang="less" scoped>
 </style>

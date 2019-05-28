@@ -52,9 +52,6 @@ export const landData = {
         }, {
             name: '联系方式',
             key: 'contactsTel'
-        }, {
-            name: '注释',
-            key: 'comment'
         }
     ],
     totalDatas: [
@@ -525,7 +522,6 @@ export const statusdata = {
             value: 2
         }
     ],
-    townCheckText: ['','通过', '未通过', '待审核','未通过'],
     checkProgress: ['未填报', '已填报', '已提交', '乡镇退回', '审核通过', '驳回复核'],
     checkProcess: [
         {

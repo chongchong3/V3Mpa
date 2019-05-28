@@ -11,8 +11,6 @@
 <script>
 import BasePage from '@/components/BasePage'
 
-import {} from '@api/gov/${NAME}'
-
 export default {
     data() {
         return {
@@ -32,6 +30,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+${config.css ? "@import './less/" + config._filename + ".less';" : ''}
 
 </style>

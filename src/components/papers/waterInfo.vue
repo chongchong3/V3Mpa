@@ -11,17 +11,7 @@
             </span>
           </div>
           <div class="itempaper-table">
-              <el-table
-              :data="department.list"
-              stripe
-              style="width: 100%" align="center" >
-              <el-table-column   v-for="(item,index) in land.departmentList" :key="index+'q'"
-                :prop="item.key" align="center" 
-                :label="item.name"
-              >
-              </el-table-column>
-            </el-table>
-            <!-- <el-row
+            <el-row
               :gutter="20"
               class="data-cells"
               v-for="(item,index) in land.departmentList"
@@ -33,7 +23,7 @@
               <el-col :span="14" class="data-cells-detail" >
                 <div>{{department[item.key]}}</div>
               </el-col>
-            </el-row> -->
+            </el-row>
           </div>
         </div>
         <div class="water-total itempaper">
@@ -69,7 +59,6 @@
             <div class="total-cell waterTotal">
               <div class="text">用水量合计</div>
               <div class="val">{{waterList.waterTotal}}</div>
-              <div class="one"></div>
             </div>
             <div class="table-tbody">
               <div
@@ -82,11 +71,11 @@
                   <el-col :span="6" class="waterMeterNumber">{{v.waterMeterNumber}}</el-col>
                   <el-col :span="6" class="waterMeterName">{{v.waterMeterName}}</el-col>
                   <el-col :span="6" class="waterConsumption">{{v.waterConsumption}}</el-col>
-                  <el-col class="waterConsumption" :span="4">{{rejectUpdateList[v.id]}}</el-col>
+                  <el-col class="waterConsumption" :span="4">{{obj1[v.id]}}</el-col>
                 </el-row>
                 <div
                   class="edit-data edit-someone water-num-btn"
-                  v-show="action=='entFile'"
+                  v-show="action=='entName'"
                 >
                   <div class="btn btn-edit" @click="editWater(v,i)">
                     <i class="iconfont icon-xiugai"></i>
@@ -107,7 +96,7 @@
                   <button class="sendIdea" @click="sendIdeas($event)">发起申诉</button>
                   <button class="sureIdea" @click="sendIdeas($event)">确认无误</button>
                 </div>
-                <div class="buttons" v-show="action=='check'&&param.status=='6'&&v.importType == 1" v-if="fileArr.length>0">
+                <div class="buttons" v-show="action=='check'&&param.status=='6'&&v.importType == 1" v-if="fileArr!==''">
                   <button 
                     class="sendIdea"
                     @click="sendIdeas($event)"
@@ -119,7 +108,7 @@
                     :class="fileArr.includes(itemArr[i])==false?'disableStatus1':''"
                   >{{fileArr.includes(itemArr[i])!==true?'已确认':'确认无误'}}</button>
                 </div>
-                <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr.length>0">
+                <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr!==''">
                   <div v-show="fileArr.indexOf('electricityConsumption'+(i+1))!==-1">
                     <button class="sendIdea" @click="backReason(v.id,$event,'驳回原因',i)">驳回</button>
                     <button class="sureIdea" @click="backReason(v.id,$event,'修改',i)">修改</button>
@@ -152,7 +141,7 @@
           </div>
         </div>
       </div>
-      <div class="appeal-content"  v-show="textReason">
+      <div class="appeal-content">
         <textarea name cols="30" rows="5" placeholder="请输入申诉内容和理由"></textarea>
       </div>
     </div>
@@ -204,8 +193,7 @@
   </div>
 </template>
 <script>
-// import * as api from "@api/gov/companyPaperDetail";
-import { getWaterData,getListWaterEntName,addWaterUsed,deleteWaterUsed } from "@api/gov/companyPaperDetail";
+import * as api from "@api/gov/companyPaperDetail";
 import { landData } from "@/common/constant/constant";
 export default {
   data() {
@@ -215,7 +203,7 @@ export default {
       dialogBack: false,
       backId: "", //当前驳回和修改的ID
       fileArr: [], //审核状态数据
-      // obj1: {}, //驳回成功后，返回的驳回备注
+      obj1: {}, //驳回成功后，返回的驳回备注
       targetIndex: "", //触发的下标
       isApeal: "", //驳回成功后，‘驳回’，‘修改’按钮回显状态控制
       files: new Set(), //自核状态下，把所有‘已自核’的字段添加到改属性传给后台
@@ -253,8 +241,8 @@ export default {
       default: null
     },
     rejectUpdateList: {
-      type: Object,
-      default: null
+      type: Array,
+      default: []
     }
   },
   computed: {
@@ -281,6 +269,7 @@ export default {
         this.title = title;
         this.dialogBack = true;
       }
+      this.title = title;
       this.isApeal = event.target;
       this.backId = backId;
       this.targetIndex = index;
@@ -313,18 +302,12 @@ export default {
       } else {
         // this.fileArr = [];
       }
-      if(arr.content !== undefined && arr.content !== null && arr.content!==''){
-        this.textReason=true
-        this.appealReason=arr.content
-      }
       //驳回备注信息
-      // this.rejectUpdateList.map((v, i) => {
-      //   this.obj1[v.typeId] = v.content;
-      //   this.dialogBack = false;
-      //   this.backReas = "";
-      // });
-      this.dialogBack = false;
-      this.backReas = "";
+      this.rejectUpdateList.map((v, i) => {
+        this.obj1[v.typeId] = v.content;
+        this.dialogBack = false;
+        this.backReas = "";
+      });
       //  console.log( this.obj1)
       //驳回成功后按钮灰显
       if (this.isApeal !== "") {
@@ -340,9 +323,7 @@ export default {
     //发起申述
     sendIdeas(e, key = "") {
       if (e.target.innerHTML == "发起申诉") {
-         if(key!==''){
-           this.files.add(key);
-         }
+        this.files.add(key);
         e.target.innerHTML = "已申诉";
         e.target.nextSibling.innerHTML = "确认无误";
         e.target.nextSibling.classList.remove("disableStatus1");
@@ -400,7 +381,7 @@ export default {
     },
     delWater(i, ID) {
       if (ID !== undefined) {
-        deleteWaterUsed({ id: ID }).then(res => {
+        api.deleteWaterUsed({ id: ID }).then(res => {
           if (res.code == "0000") {
           }
         });
@@ -417,7 +398,8 @@ export default {
         creditCode: this.param.creditCode,
         dataYear: this.param.dataYear
       };
-      getWaterData(params)
+      api
+        .getWaterData(params)
         .then(res => {
           if (res.code == "0000") {
             this.waterList = Object.assign({}, this.waterList, res.data);
@@ -439,7 +421,7 @@ export default {
         num: "",
         name: queryString
       };
-      getListWaterEntName(params).then(res => {
+      api.getListWaterEntName(params).then(res => {
         if (res.code == "0000") {
           let results = res.data || [];
           results = results.map(v => {
@@ -463,7 +445,7 @@ export default {
         num: queryString,
         name: ""
       };
-      getListWaterEntName(params).then(res => {
+      api.getListWaterEntName(params).then(res => {
         if (res.code == "0000") {
           let results = res.data || [];
           results = results.map(v => {
@@ -521,7 +503,7 @@ export default {
           v.selfExtractingWater = this.waterList.selfExtractingWater;
           return v;
         });
-        addWaterUsed({ waterUsedList: list }).then(res => {});
+        api.addWaterUsed({ waterUsedList: list }).then(res => {});
         let $arr = [
           {
             before: beforea,
@@ -551,13 +533,11 @@ export default {
             typeId: this.backId
           })
         );
-        // this.rejectUpdateList.map((v, i) => {
-        //   this.obj1[v.typeId] = v.content;
-        //   this.dialogVisible = false;
-        //   this.reset();
-        // });
-        this.dialogVisible = false;
-        this.reset();
+        this.rejectUpdateList.map((v, i) => {
+          this.obj1[v.typeId] = v.content;
+          this.dialogVisible = false;
+          this.reset();
+        });
         return;
       }
       if (this.editIndex !== "") {
@@ -574,8 +554,8 @@ export default {
         } else {
           this.waterList.waterMap.push(this.waterForm);
         }
+        this.dialogVisible = false;
       }
-      this.dialogVisible = false;
       this.reset();
     },
     reset() {

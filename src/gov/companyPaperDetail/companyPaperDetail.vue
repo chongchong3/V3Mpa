@@ -8,16 +8,16 @@
           <span class="name">{{paramObj.entName}}</span>
         </section>
         <paperTabs
-          :paperData="curModAuthority"  v-if="isReload"
+          :paperData="curModAuthority"
           @tabClick="tabClick"
           :changeIndex="changeIndex"
+          ref="massage"
         ></paperTabs>
         <section>
           <div class="btns-finally entFile" v-show="paramObj.action == 'entFile'">
             <div class="right-finally prevItem" v-show="tabIndex != 0" @click="prevTab">上一项</div>
             <div class="right-finally nextItem" v-show="tabIndex != 7" @click="nextTab">下一项</div>
-            <div class="right-finally nextItem"  @click="confirmData(0)">暂存</div>
-            <div class="right-finally saveItem" v-show="tabIndex == 7" @click="confirmData(1)">保存</div>
+            <div class="right-finally saveItem" v-show="tabIndex == 7" @click="confirmData">保存</div>
           </div>
           <div class="btns-finally check" v-show="paramObj.action == 'check'">
             <div class="right-finally prevItem" v-show="tabIndex != 0" @click="prevTab">上一项</div>
@@ -27,23 +27,11 @@
           <div class="btns-finally appealRecord" v-show="paramObj.action == 'appealRecord'">
             <!-- <div class="right-finally saveUpdateData" @click="saveAppeal">保存</div>
             <div class="orange-finally reject">驳回</div>
-            <div class="right-finally updateSomeData">修改</div>-->
+            <div class="right-finally updateSomeData">修改</div> -->
           </div>
           <div class="btns-finally townCheck" v-show="paramObj.action == 'townCheck'">
-             <div  v-show="paramObj.townStatus=='1'&&userType=='1'"
-              class="orange-finally adopt"
-              @click="refillInEvent"
-            >重新填报</div>
-                <div v-show="!(paramObj.townStatus!='3'||userType=='1')"
-                  class="orange-finally notAdopt"
-                  @click="notAdoptEvnet"
-                  :class="noClick==true?'disabled-click':''"
-                >不通过</div>
-                <div  v-show="!(paramObj.townStatus!='3'||userType=='1')"
-                  class="right-finally adopt"
-                  @click="adoptEvnet"
-                  :class="noClick==true?'disabled-click':''"
-                >通过</div>
+            <div class="orange-finally notAdopt" @click="notAdoptEvnet" :class="noClick==true?'disabled-click':''">不通过</div>
+            <div class="right-finally adopt" @click="adoptEvnet"  :class="noClick==true?'disabled-click':''">通过</div>
           </div>
         </section>
       </div>
@@ -56,37 +44,20 @@ import paperTabs from "@/components/paperTabs";
 import { paperTabData } from "@/common/constant/constant";
 import BasePage from "@/components/BasePage";
 import "./less/companyPaperDetail.less";
-// import * as api from "@api/gov/companyPaperDetail";
-import {
-  townUnPass,
-  townPass,
-  showApartment,
-  getConfirm,
-  updateOrAddTaxData,
-  updateRentLand,
-  insertLandImg,
-  updateInputLandData,
-  addWaterUsed,
-  addElectricData,
-  updateOraddManagementData,
-  haveBeenReported,
-  complain,refillIn
-} from "@api/gov/companyPaperDetail";
-import { getUrlParam, compareProperty ,gotoGovURL} from "@/common/utils/index";
-
+import * as api from "@api/gov/companyPaperDetail";
+import { getUrlParam,compareProperty } from "@/common/utils/index";
+// import * as url from "@/common/utils/util.js"; //跳转路径
+// import compareProperty from "@/common/utils/compareObj.js";
 import { log } from "util";
-import { Promise } from 'q';
 export default {
   data() {
     return {
       paperTabData: paperTabData,
-      confirmStatus: 0,
       curModAuthority: [],
-      noClick: false,
+      noClick:false,
       department: [],
       tabIndex: 0,
       changeIndex: "0",
-      isReload:true,
       paramObj: {
         action: "",
         creditCode: "",
@@ -159,42 +130,28 @@ export default {
     backToPrevPage() {
       this.$router.go(-1);
     },
-    notAdoptEvnet() {
-      let params = {
-        dataYear: this.paramObj.dataYear,
-        creditCode: this.paramObj.creditCode
-      };
-      townUnPass(params).then(res => {
-        if (res.code == "0000") {
-          this.$message.success("操作成功");
-          this.noClick = true;
-        }
-      });
+    notAdoptEvnet(){
+      let params={
+        dataYear:this.paramObj.dataYear,
+        creditCode:this.paramObj.creditCode
+      }
+       api.townUnPass(params).then((res)=>{
+          if(res.code=='0000'){
+            this.$message.success( '操作成功')
+            this.noClick=true
+          }
+       })
     },
-    adoptEvnet() {
-      let params = {
-        dataYear: this.paramObj.dataYear,
-        creditCode: this.paramObj.creditCode
-      };
-      townPass(params).then(res => {
-        if (res.code == "0000") {
-          this.$message.success("操作成功");
-          this.noClick = true;
-        }
-      });
-    },
-    //重新填报
-    refillInEvent(){
-      let params = {
-        dataYear: this.paramObj.dataYear,
-        creditCode: this.paramObj.creditCode
-      };
-      refillIn(params).then((res)=>{
-        if(res.code=='0000'){
-                gotoGovURL('townCheck.html');
-            }else{
-               this.$message.error(res.msg)
-            }
+    adoptEvnet(){
+       let params={
+        dataYear:this.paramObj.dataYear,
+        creditCode:this.paramObj.creditCode
+      }
+       api.townPass(params).then((res)=>{
+          if(res.code=='0000'){
+            this.$message.success( '操作成功' )
+             this.noClick=true
+          }
        })
     },
     saveAppeal() {},
@@ -202,7 +159,7 @@ export default {
       let params = {
         dataYear: this.paramObj.dataYear
       };
-      showApartment(params).then(res => {
+      api.showApartment(params).then(res => {
         if (res.code == "0000") {
           this.department = res.data || [];
         }
@@ -237,111 +194,107 @@ export default {
             seq: v.seq
           };
         }) || [];
+       
     },
     //数据校验数据校验
-    confirmData(type = 0) {
-      this.confirmStatus = type;
-      if (type == 0) {
-        this.saveEntFileData();
-      } else if (type == 1) {
-        let a = this.checkLogLandData(this.landList.landDataList);
-        let b = this.checkLogLandData(this.landList.rentOutLandList);
-        let c = this.checkLogLandData(this.landList.rentInLandList);
-        if (this.landList.landDataList.length > 0 && !a) {
-          this.$message.warning("请上传不动产权证");
-        } else if (this.landList.rentOutLandList.length > 0 && !b) {
-          this.$message.warning("请上传承租合同");
-        } else if (this.landList.rentInLandList.length > 0 && !c) {
-          this.$message.warning("请上传承租合同");
-        } else if (
-          (this.landList.rentOutLandList.length > 0 ||
-            this.landList.rentInLandList.length > 0) &&
-          !this.landList.releateImg
-        ) {
-          this.$message.warning("请上传承租关系确认书");
-        } else {
-          //   console.log(this.taxList)
-          let {
-            taxRevenue,
-            incrementTax,
-            taxStorage,
-            exportTax,
-            retreatInAdvanceTax,
-            immediateWithdrawalTax,
-            consumptionTax,
-            businessIncomeTaxes,
-            personTax,
-            cityLandTax,
-            townReturnMoney,
-            carTax,
-            landIncrementTax,
-            yhTax,
-            cswhTax,
-            resourceTax,
-            jyfj,
-            placeJyfj,
-            hjbhTax
-          } = this.taxList;
-          let obj = {
-            taxRevenue,
-            incrementTax,
-            taxStorage,
-            exportTax,
-            retreatInAdvanceTax,
-            immediateWithdrawalTax,
-            consumptionTax,
-            businessIncomeTaxes,
-            personTax,
-            cityLandTax,
-            townReturnMoney,
-            carTax,
-            landIncrementTax,
-            yhTax,
-            cswhTax,
-            resourceTax,
-            jyfj,
-            placeJyfj,
-            hjbhTax
-          };
-          getConfirm(obj).then(d => {
-            if (d.code == "0000") {
-              if (d.data != "-1") {
-                let taxs = d.data.tax;
-                let sum = d.data.sum;
-                this.$confirm("税务数据校验不一致，是否确认修改?", "提示", {
-                  confirmButtonText: "是",
-                  cancelButtonText: "否",
-                  type: "warning"
+    confirmData() {
+      let a = this.checkLogLandData(this.landList.landDataList);
+      let b = this.checkLogLandData(this.landList.rentOutLandList);
+      let c = this.checkLogLandData(this.landList.rentInLandList);
+      if (this.landList.landDataList.length > 0 && !a) {
+        this.$message.warning("请上传不动产权证");
+      } else if (this.landList.rentOutLandList.length > 0 && !b) {
+        this.$message.warning("请上传承租合同");
+      } else if (this.landList.rentInLandList.length > 0 && !c) {
+        this.$message.warning("请上传承租合同");
+      } else if (
+        (this.landList.rentOutLandList.length > 0 ||
+          this.landList.rentInLandList.length > 0) &&
+        !this.landList.releateImg
+      ) {
+        this.$message.warning("请上传承租关系确认书");
+      } else {
+        //   console.log(this.taxList)
+        let {
+          taxRevenue,
+          incrementTax,
+          taxStorage,
+          exportTax,
+          retreatInAdvanceTax,
+          immediateWithdrawalTax,
+          consumptionTax,
+          businessIncomeTaxes,
+          personTax,
+          cityLandTax,
+          townReturnMoney,
+          carTax,
+          landIncrementTax,
+          yhTax,
+          cswhTax,
+          resourceTax,
+          jyfj,
+          placeJyfj,
+          hjbhTax
+        } = this.taxList;
+        let obj = {
+          taxRevenue,
+          incrementTax,
+          taxStorage,
+          exportTax,
+          retreatInAdvanceTax,
+          immediateWithdrawalTax,
+          consumptionTax,
+          businessIncomeTaxes,
+          personTax,
+          cityLandTax,
+          townReturnMoney,
+          carTax,
+          landIncrementTax,
+          yhTax,
+          cswhTax,
+          resourceTax,
+          jyfj,
+          placeJyfj,
+          hjbhTax
+        };
+        api.getConfirm(obj).then(d => {
+          if (d.code == "0000") {
+            if (d.data != "-1") {
+              let taxs = d.data.tax;
+              let sum = d.data.sum;
+              this.$confirm("税务数据校验不一致，是否确认修改?", "提示", {
+                confirmButtonText: "是",
+                cancelButtonText: "否",
+                type: "warning"
+              })
+                .then(() => {
+                  let params = {
+                    dataYear: this.paperParam.dataYear,
+                    creditCode: this.paperParam.creditCode,
+                    entName: this.paperParam.entName,
+                    updateTime: null,
+                    createTime: null,
+                    taxRevenue: sum,
+                    incrementTax: taxs,
+                    ...this.taxList
+                  };
+                  for (let v in params) {
+                    params[v] == null ? (params[v] = "") : params[v];
+                  }
+                  api.updateOrAddTaxData(params).then(res => {});
                 })
-                  .then(() => {
-                    let params = {
-                      dataYear: this.paperParam.dataYear,
-                      creditCode: this.paperParam.creditCode,
-                      entName: this.paperParam.entName,
-                      updateTime: null,
-                      createTime: null,
-                      taxRevenue: sum,
-                      incrementTax: taxs,
-                      ...this.taxList
-                    };
-                    for (let v in params) {
-                      params[v] == null ? (params[v] = "") : params[v];
-                    }
-                    updateOrAddTaxData(params).then(res => {});
-                  })
-                  .catch(() => {
-                    this.$message({
-                      type: "info",
-                      message: "已取消校验"
-                    });
+                .catch(() => {
+                  this.$message({
+                    type: "info",
+                    message: "已取消校验"
                   });
-                this.saveEntFileData();
-              } else {
-                this.saveEntFileData();
-              }
+                });
+              this.saveEntFileData();
+            } else {
+              this.saveEntFileData();
             }
-          });
-        }
+          }
+        });
       }
     },
     //检验合同是否上传
@@ -369,15 +322,17 @@ export default {
         this.landList.rentOutLandList.length > 0 ||
         !!this.landList.otherLand
       ) {
-        updateRentLand(params).then(d => {
+        api.updateRentLand(params).then(d => {
           if (d.code == "0000") {
           }
         });
       }
-      insertLandImg(params1).then(d => {
-        if (d.code == "0000") {
-        }
-      });
+      if (this.landList.releateImg) {
+        api.insertLandImg(params1).then(d => {
+          if (d.code == "0000") {
+          }
+        });
+      }
       if (this.landList.landDataList.length > 0) {
         let arr = this.landList.landDataList.map((v, i) => {
           let data = Object.assign({}, v, {
@@ -386,7 +341,7 @@ export default {
           });
           return data;
         });
-        updateInputLandData({ dataList: arr }).then(res => {});
+        api.updateInputLandData({ dataList: arr }).then(res => {});
       }
       if (!!this.waterList.waterMap && this.waterList.waterMap.length > 0) {
         let params = this.waterList.waterMap.map((v, i) => {
@@ -396,7 +351,7 @@ export default {
           v.selfExtractingWater = this.waterList.selfExtractingWater;
           return v;
         });
-        addWaterUsed({ waterUsedList: params }).then(res => {});
+        api.addWaterUsed({ waterUsedList: params }).then(res => {});
       }
       if (!!this.electricList.mapList && this.electricList.mapList.length > 0) {
         let params = this.electricList.mapList.map((v, i) => {
@@ -405,51 +360,36 @@ export default {
           v.dataYear = this.paramObj.dataYear;
           return v;
         });
-        addElectricData({ electricUsedList: params }).then(res => {});
+        api.addElectricData({ electricUsedList: params }).then(res => {});
       }
-      return  Promise.resolve()
     },
     saveEntFileData() {
-      this.addRequest().then(()=>{
-         let params = Object.assign({}, this.operateList, {
-            creditCode: this.paperParam.creditCode,
-            dataYear: this.paperParam.dataYear
-         });
-        if (!!this.operateList) {
-          updateOraddManagementData(params).then(d => {
-            if (d.code == "0000") {
-              if (this.confirmStatus == 0) {
-                this.$message.success("暂存成功");
-                this.isReload=false
-                let time=setTimeout(()=>{this.isReload=true}, 0)
-              }
-            }
-          });
-        }
-        if (this.confirmStatus == 1) {
-        
-          haveBeenReported({
-            creditCode: this.paperParam.creditCode,
-            dataYear: this.paperParam.dataYear
-          }).then(res => {
-            if (res.code == "0000") {
-              // gotoGovURL("companySelfCore.html");
-            }
-          });
-        }
+      this.addRequest();
+      let params = Object.assign({}, this.operateList, {
+        creditCode: this.paperParam.creditCode,
+        dataYear: this.paperParam.dataYear
       });
-     
-   
+      if (!!this.operateList) {
+        api.updateOraddManagementData(params).then(d => {
+          if (d.code == "0000") {
+          }
+        });
+      }
+      api
+        .haveBeenReported({
+          creditCode: this.paperParam.creditCode,
+          dataYear: this.paperParam.dataYear
+        })
+        .then(res => {
+          if (res.code == "0000") {
+            url.gotoGovURL("companySelfCore.html");
+          }
+        });
     },
     //自核事件
     confirmCheck() {
       let showDio = this.$store.state.apealButs;
-      if (
-        showDio.landInfo ||
-        showDio.pollution ||
-        showDio.taxInfo ||
-        showDio.totalInfo
-      ) {
+      if (showDio.landInfo||showDio.pollution || showDio.taxInfo || showDio.totalInfo) {
         this.$confirm("未核对信息将默认为确认无误，是否确认?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -469,26 +409,39 @@ export default {
       }
     },
     submitCheck() {
-      let stores = this.$store.state;
-      let checks = [];
+      let check1 = this.$store.state.sendList1;
+      let check2 = this.$store.state.sendList2;
+      let check3 = this.$store.state.sendList3;
+      let check4 = this.$store.state.sendList4;
+      let check5 = this.$store.state.sendList5;
+      let check6 = this.$store.state.sendList6;
       let arr = [];
-      for (let i = 1; i < 7; i++) {
-        let sendName = `sendList${i}`;
-        checks.push(stores[sendName]);
+      if (JSON.stringify(check1) !== "{}") {
+        arr.push(check1);
       }
-      checks.map((v, i) => {
-        if (JSON.stringify(v) !== "{}") {
-          arr.push(v);
-        }
-      });
-      complain({
-        creditCode: this.paperParam.creditCode,
-        dataYear: this.paperParam.dataYear,
-        entName: this.paperParam.entName,
-        list: arr
-      }).then(res => {
-        //  gotoGovURL("companySelfCore.html");
-      });
+      if (JSON.stringify(check2) !== "{}") {
+        arr.push(check2);
+      }
+      if (JSON.stringify(check3) !== "{}") {
+        arr.push(check3);
+      }
+      if (JSON.stringify(check4) !== "{}") {
+        arr.push(check4);
+      }
+      if (JSON.stringify(check5) !== "{}") {
+        arr.push(check5);
+      }
+      if (JSON.stringify(check6) !== "{}") {
+        arr.push(check6);
+      }
+      api
+        .complain({
+          creditCode: this.paperParam.creditCode,
+          dataYear: this.paperParam.dataYear,
+          entName: this.paperParam.entName,
+          list: arr
+        })
+        .then(res => {});
     }
   },
   components: {

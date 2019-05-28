@@ -16,7 +16,7 @@
 //btn tip
 .btn{
   position: relative;
-  // color:@textColor;
+  color:@textColor;
   &:hover{
     color:@hoverColor;
   }
@@ -132,13 +132,15 @@
 }
 .data-cell-title{
   background: @tableCellColor;
-  justify-content: center;
   .data-cell-common;
 }
 .data-cell-detail{
   background: #fff;
   .data-cell-common;
 }
+
+
+
 //
 .data-tr{
   min-height: 40px;
@@ -198,7 +200,7 @@
     width:100%;
     display: flex;
     justify-content: space-between;
-    // align-items: center;
+    align-items: center;
     min-height: 30px;
     position: relative;
     &:last-child{
@@ -298,7 +300,7 @@
   &>div{
     flex: 1;
     .flx;
-    min-height: 30px;
+    height: 30px;
     justify-content: center;
     &:last-child{
       border-right:none;
@@ -594,15 +596,11 @@
     align-items: center;
     span {
       display: inline-block;
-      min-height: 30px;
+      height: 30px;
       width: 45px;
-      // line-height: 30px;
+      line-height: 30px;
       text-align: center;
       border-right:1px solid rgba(242,244,247,1);
-      height:100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       &:last-child {
         width: auto;
         flex: 1;
@@ -653,20 +651,6 @@
   color: #FA576B !important;
 }
 .disabled-click{
-  pointer-events: none !important;
-  background: #ccc !important;
+  pointer-events: none!important;
+  background: #ccc!important;
 }
-.itempaper-table{
-  .el-table th {
-    text-align: center;
-    background-color: #F7F9FC;
-    color: #455467;
-    min-height: 30px;
-    font-weight: 500;
-    font-size: 12px;
-  }
-  .el-table td,.el-table th{
-    padding: 5px 0;
-  }
-}
-

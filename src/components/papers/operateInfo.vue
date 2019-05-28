@@ -74,8 +74,7 @@
     </div>
 </template>
 <script>
-// import * as api from "@api/gov/companyPaperDetail";
- import {selectIndustry,getOperateData} from "@api/gov/companyPaperDetail";
+import * as api from "@api/gov/companyPaperDetail";
 import { landData } from "@/common/constant/constant";
 import {getLocalStorage,setLocalStorage} from "@/common/utils/index.js";
 export default {
@@ -131,7 +130,7 @@ export default {
           });
         });
       } else {
-        selectIndustry().then(res => {
+        api.selectIndustry().then(res => {
           if (res.code === "0000") {
             this.industryOptions = res.data.industry || [];
             setLocalStorage("reallyIndus", JSON.stringify(res.data.industry));
@@ -154,11 +153,11 @@ export default {
         creditCode: this.param.creditCode,
         dataYear: this.param.dataYear
       };
-      getOperateData(params)
+      api
+        .getOperateData(params)
         .then(res => {
-          if (res.code == "0000" && res.data !== null) {
+          if (res.code == "0000") {
             this.operateList = Object.assign({}, this.operateList, res.data);
-            console.log(this.operateList,'lll')
             this.tempIndus = this.operateList.actualBusiness;
              let aa = Array.of();
             if (res.data.actualBusiness!=='') {
@@ -174,6 +173,7 @@ export default {
                 aa = Array.of(v1, v2, value);
               }
             }
+
             this.actualBusiness = aa;
           }
         })

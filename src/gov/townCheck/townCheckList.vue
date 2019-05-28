@@ -153,9 +153,9 @@
                             }}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="townStatus" label="审核状态" width="120">
+                    <el-table-column prop="status" label="审核状态" width="120">
                         <template slot-scope="scope">
-                            {{ townCheckText[scope.row.townStatus] }}
+                            {{ checkProgress[scope.row.status] }}
                         </template>
                     </el-table-column>
                     <el-table-column prop="status" label="操作" width="120">
@@ -217,8 +217,7 @@ export default {
             entNameLike: "",
             dataErro: "",
             townDatas: ["全部"],
-            checkProgress: ["全部", ...statusdata.townCheck],
-            townCheckText:statusdata.townCheckText,
+            checkProgress: ["全部", ...statusdata.checkProgress],
             dataTime: [{ name: "全部", val: "" }, ...dataTime],
             errors: [
                 { name: "全部", val: "" },
@@ -302,7 +301,7 @@ export default {
             return row.entNameLike;
         },
         handleViewDetailClick(row) {
-//            console.log(row);
+            console.log(row);
 
             let start = row.startTime;
             let end = row.endTime;

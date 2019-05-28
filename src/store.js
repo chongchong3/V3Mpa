@@ -8,12 +8,12 @@ export default new Vuex.Store({
         permission: [],
         routePath: [],
         isEntFile:false,//是否有档案权限
-        isAdmin:1,//是否为管理员
+        isAdmin:false,//是否为管理员
         creditCode:'',
         curModAuthority:[],
         totalWater:0,//总用水
         sendListTotal:[], //自核列表
-        sendList1:{},
+        setList1:{},
         sendList2:{},
         sendList3:{},
         sendList4:{},
@@ -138,12 +138,13 @@ export default new Vuex.Store({
         },
 
         setAdmin(state) {
-            let isAdmin=0
+            let isAdmin = false;
             try {
-               isAdmin = JSON.parse(localStorage.getItem('isAdmin'));
+                isAdmin = JSON.parse(localStorage.getItem('isAdmin'));
             } catch (error) {
                 throw new Error('JSON转换错误')
             }
+            // console.log(isAdmin);
             state.isAdmin = isAdmin;
         },
         setRoutePath(state, path) {

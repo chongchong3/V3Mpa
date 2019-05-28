@@ -56,14 +56,34 @@
                 >
             </el-row>
             <el-row class="business-tr">
-                <el-col :span="4" class="data-cell-title"><div>行业门类名称</div></el-col>
-                <el-col :span="6" class="data-cell-detail"><div>{{ bussiness.industryPhyName }}({{bussiness.industryPhyCode}})</div></el-col>
-                <el-col :span="6" class="data-cell-title"><div>经营期限</div></el-col>
-                <el-col :span="8" class="data-cell-detail"><div>{{ bussiness.openTo }}</div></el-col>
+                <el-col :span="4" class="data-cell-title"
+                    ><div>行业门类名称</div></el-col
+                >
+                <el-col :span="6" class="data-cell-detail"
+                    ><div>
+                        {{ bussiness.industryPhyName }}({{
+                            bussiness.industryPhyCode
+                        }})
+                    </div></el-col
+                >
+                <el-col :span="6" class="data-cell-title"
+                    ><div>经营期限</div></el-col
+                >
+                <el-col :span="8" class="data-cell-detail"
+                    ><div>{{ bussiness.openTo }}</div></el-col
+                >
             </el-row>
             <el-row class="business-tr">
-                <el-col :span="4" class="data-cell-title"><div>国民经济行业名称（代码）</div></el-col>
-                <el-col :span="6" class="data-cell-detail"><div>{{ bussiness.industryName }}({{bussiness.industryCode}})</div></el-col>
+                <el-col :span="4" class="data-cell-title"
+                    ><div>国民经济行业名称（代码）</div></el-col
+                >
+                <el-col :span="6" class="data-cell-detail"
+                    ><div>
+                        {{ bussiness.industryName }}({{
+                            bussiness.industryCode
+                        }})
+                    </div></el-col
+                >
                 <el-col :span="6" class="data-cell-title"
                     ><div>登记机关</div></el-col
                 >
@@ -76,7 +96,10 @@
                     ><div>所属地区</div></el-col
                 >
                 <el-col :span="6" class="data-cell-detail"
-                    ><div>{{ bussiness.province }}{{ bussiness.city}}{{ bussiness.county }}</div></el-col
+                    ><div>
+                        {{ bussiness.province }}{{ bussiness.city
+                        }}{{ bussiness.county }}
+                    </div></el-col
                 >
                 <el-col :span="6" class="data-cell-title"
                     ><div>地址</div></el-col
@@ -90,7 +113,8 @@
                     ><div>经营范围</div></el-col
                 >
                 <el-col :span="20" class="data-cell-detail"
-                    ><div>{{ toHtmlStr(bussiness.operateScope, "-") }}
+                    ><div>
+                        {{ toHtmlStr(bussiness.operateScope, "-") }}
                     </div></el-col
                 >
             </el-row>
@@ -155,5 +179,4 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-
 </style>

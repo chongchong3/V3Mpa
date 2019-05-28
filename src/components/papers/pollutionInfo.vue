@@ -8,17 +8,7 @@
             <span>咨询部门</span>
           </div>
           <div class="itempaper-table">
-              <el-table
-              :data="department.list"
-              stripe
-              style="width: 100%" align="center" >
-              <el-table-column   v-for="(item,index) in land.departmentList" :key="index+'q'"
-                :prop="item.key" align="center" 
-                :label="item.name"
-              >
-              </el-table-column>
-            </el-table>
-            <!-- <el-row
+            <el-row
               :gutter="20"
               class="data-cells"
               v-for="item in land.departmentList"
@@ -30,7 +20,7 @@
               <el-col :span="14" class="data-cells-detail">
                 <div>{{department[item.key]}}</div>
               </el-col>
-            </el-row> -->
+            </el-row>
           </div>
         </div>
         <div class="swap-item itempaper">
@@ -52,7 +42,7 @@
                 <div>{{weaList[item.key]}}</div>
               </el-col>
               <el-col :span="7" class="data-cells-detail appeal_reason">
-                <div>{{rejectUpdateList[item.key]}}</div>
+                <div>{{obj1[item.key]}}</div>
               </el-col>
               <div class="buttons" v-show="action=='check'&&param.status!=='6'" ref="sureApeal">
                 <button class="sendIdea" @click="sendIdeas($event,item.key)">发起申诉</button>
@@ -71,7 +61,7 @@
                   :class="fileArr.includes(item.key)==false?'disableStatus1':''"
                 >{{fileArr.includes(item.key)!==true?'已确认':'确认无误'}}</button>
               </div>
-              <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr&&param.userType=='6'">
+              <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr">
                 <div v-if="fileArr.includes(item.key)">
                   <button class="sendIdea" @click="backReason(item.key,$event,'驳回原因')">驳回</button>
                   <button class="sureIdea" @click="backReason(item.key,$event,'修改')">修改</button>
@@ -102,7 +92,7 @@
                 <div>{{weaList[item.key]}}</div>
               </el-col>
               <el-col :span="7" class="data-cells-detail appeal_reason">
-                <div>{{rejectUpdateList[item.key]}}</div>
+                <div>{{obj1[item.key]}}</div>
               </el-col>
               <div class="buttons" v-show="action=='check'&&param.status!=='6'" ref="sureApeal">
                 <button class="sendIdea" @click="sendIdeas($event,item.key)">发起申诉</button>
@@ -121,7 +111,7 @@
                   :class="fileArr.includes(item.key)==false?'disableStatus1':''"
                 >{{fileArr.includes(item.key)!==true?'已确认':'确认无误'}}</button>
               </div>
-              <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr&&param.userType=='6'">
+              <div class="buttons appeal" v-show="action=='appealRecord'" v-if="fileArr">
                 <!-- <span>{{item.key}}</span> -->
                 <div v-if="fileArr.includes(item.key)">
                   <button class="sendIdea" @click="backReason(item.key,$event,'驳回原因')">驳回</button>
@@ -161,8 +151,7 @@
   </div>
 </template>
 <script>
-// import * as api from "@api/gov/companyPaperDetail";
-import {getPollution,updateOrAddEnvironmentData} from "@api/gov/companyPaperDetail";
+import * as api from "@api/gov/companyPaperDetail";
 import { landData } from "@/common/constant/constant";
 export default {
   data() {
@@ -171,7 +160,7 @@ export default {
       backField: "", //当前驳回的字段
       backReas: "", //当前驳回的理由
       dialogBack: false,
-      // obj1: {}, //驳回成功后，返回的驳回备注
+      obj1: {}, //驳回成功后，返回的驳回备注
       isApeal: "", //驳回成功后，‘驳回’，‘修改’按钮回显状态控制
       fileArr: [], //审核状态数据
       action: this.$store.state.paperParam.action, //路径的action状态
@@ -206,8 +195,8 @@ export default {
       default: null
     },
     rejectUpdateList: {
-      type: Object,
-      default: null
+      type: Array,
+      default: []
     }
   },
   watch: {
@@ -217,7 +206,7 @@ export default {
   },
   mounted() {
     this.getDataList();
-   
+    this.partmentApeal(this.field);
   },
   methods: {
     //驳回原因
@@ -246,10 +235,10 @@ export default {
           entName: this.param.entName
         };
         let before = this.weaList[this.backField];
-        let list = this.weaList;
+        let list = JSON.parse(JSON.stringify(this.weaList));
         list[this.backField] = this.backReas;
         let arr = Object.assign({}, list, obj);
-        updateOrAddEnvironmentData(arr).then(res => {});
+        api.updateOrAddEnvironmentData(arr).then(res => {});
         this.$emit(
           "reviseText",
           JSON.stringify({
@@ -264,10 +253,7 @@ export default {
     //部门审核显示
     partmentApeal(arr) {
       //具有驳回的所有字段
-      if(arr==null){
-        return
-      }
-      if (arr.field !== undefined && arr.field !== null) {
+      if (arr.field !== undefined && arr.field !== "") {
         this.fileArr = arr.field.split(",");
         if (this.action == "check" && this.param.status == "6") {
           this.fileArr.map((v, i) => {
@@ -277,18 +263,12 @@ export default {
       } else {
         // this.fileArr = [];
       }
-      if(arr.content !== undefined && arr.content !== null && arr.content!==''){
-        this.textReason=true
-        this.appealReason=arr.content
-      }
       //驳回备注信息
-      // this.rejectUpdateList.map((v, i) => {
-      //   this.obj1[v.field] = v.content;
-      //   this.dialogBack = false;
-      //   this.backReas = "";
-      // });
-      this.dialogBack = false;
-      this.backReas = "";
+      this.rejectUpdateList.map((v, i) => {
+        this.obj1[v.field] = v.content;
+        this.dialogBack = false;
+        this.backReas = "";
+      });
       //驳回成功后按钮灰显
       if (this.isApeal !== "") {
         if (this.title == "驳回原因") {
@@ -300,11 +280,9 @@ export default {
         }
       }
     },
-    sendIdeas(e, key) {
+    sendIdeas(e, key = "") {
       if (e.target.innerHTML == "发起申诉") {
-        if(key!==""){
-            this.files.add(key);
-        }
+        this.files.add(key);
         e.target.innerHTML = "已申诉";
         e.target.nextSibling.innerHTML = "确认无误";
         e.target.nextSibling.classList.remove("disableStatus1");
@@ -336,7 +314,6 @@ export default {
       if (apealButs.length == 0) {
         this.$store.commit("setApealButs", { value: false, type: "pollution" });
       }
-      // console.log([...this.files])
       let field = [...this.files].join(",");
       if (field == "") {
         this.textReason = false;
@@ -355,12 +332,11 @@ export default {
         creditCode: this.param.creditCode,
         dataYear: this.param.dataYear
       };
-      getPollution(params).then(res => {
+      api.getPollution(params).then(res => {
         if (res.code == "0000") {
           this.weaList = Object.assign({}, this.weaList, res.data);
         }
       });
-      this.partmentApeal(this.field);
     }
   }
 };
